@@ -9,7 +9,7 @@ def export_formats(parts, out, origin):
     plates = [
         ("01_base", ["base"]),
         ("02_front", ["lid"]),
-        ("03_small_parts", ["camera_retainer", "button_1", "button_2"]),
+        ("03_small_parts", ["camera_spacer", "button_1", "button_2", "button_3"]),
     ]
     for plate, names in plates:
         model = ET.Element(

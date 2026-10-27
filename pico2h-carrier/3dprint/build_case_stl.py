@@ -15,18 +15,19 @@ C = P["case"]
 O = C["wall"] + C["fit_clearance"]
 PW, PD = P["carrier"]["size"]
 W, D = PW + 2 * O, PD + 2 * O
-cam, pico, lcd = P["camera"], P["pico"], P["lcd"]
+cam, pico, lcd, btn = P["camera"], P["pico"], P["lcd"], P["buttons"]
 CAM_TIP = C["wall"] + cam["face_gap"]
 CAM_FRONT = CAM_TIP + cam["lens_height"]
 CAM_BACK = CAM_FRONT + cam["pcb_thickness"]
-PICO_FACE = CAM_BACK + 1.6 + pico["component_gap"]
-PCB_Z = PICO_FACE + pico["pcb_thickness"] + pico["header_height"] + pico["socket_height"]
+PCB_Z = CAM_BACK + cam["standoff"]
 PCB_TOP = PCB_Z + P["carrier"]["thickness"]
-LCD_BOTTOM = PCB_TOP + lcd["rear_connector_depth"]
-H = LCD_BOTTOM + lcd["pcb_thickness"] + lcd["glass_height"] + lcd["face_gap"]
+PICO_BACK = PCB_Z - pico["standoff"]
+PICO_FACE = PICO_BACK - pico["pcb_thickness"]
+LCD_BOTTOM = PCB_TOP + lcd["standoff"]
+LCD_TOP = LCD_BOTTOM + lcd["pcb_thickness"]
+H = LCD_TOP + lcd["glass_height"] + lcd["face_gap"]
 TOP = H + C["face_thickness"]
-i = P["carrier"]["screw_inset"] + O
-SCREWS = [(i, i), (W - i, i), (i, D - i), (W - i, D - i)]
+SCREWS = [(x + O, y + O) for x, y in P["carrier"]["screws"]]
 OUTLINE = [
     (O + 1, O),
     (W - O - 1, O),
@@ -37,6 +38,15 @@ OUTLINE = [
     (O, D - O - 1),
     (O, O + 1),
 ]
+# B-side boards are seen from the front, so the camera drawing (lens side) is mirrored in x
+CX, CY = cam["xy"][0] + O, cam["xy"][1] + O
+CAM_HOLES = [(CX + cam["size"] - x, CY + y) for x, y in cam["holes"]]
+LENS = (CX + cam["size"] - cam["lens"][0], CY + cam["lens"][1])
+PX, PY = pico["xy"][0] + O, pico["xy"][1] + O
+PICO_HOLES = [(PX + x, PY + y) for x, y in pico["holes"]]
+LX, LY = lcd["xy"][0] + O, lcd["xy"][1] + O
+LCD_HOLES = [(LX + x, LY + y) for x, y in lcd["holes"]]
+BUTTONS = [(btn["x"] + O, y + O) for y in btn["ys"]]
 
 
 def disk(x, y, radius):
@@ -134,278 +144,122 @@ def make_parts():
             }
         )
 
-    wall = C["wall"]
+    wall, clearance = C["wall"], C["fit_clearance"]
+    screw = P["carrier"]["screw"]
     base = [
         op(rounded(0, 0, W, D, 4), 0, H),
         op(rounded(wall, wall, W - wall, D - wall, 1.6), wall, H + 1, True),
+        op(disk(*LENS, cam["window_diameter"] / 2), -1, wall + 1, True),
     ]
+    # Each screw rests on the board it passes through, or on the carrier where nothing is behind it
+    rests = {SCREWS[0]: CAM_FRONT, SCREWS[1]: PCB_Z, SCREWS[2]: PICO_FACE}
     for x, y in SCREWS:
+        top = rests.get((x, y), PICO_FACE)
+        if (x, y) == SCREWS[3]:
+            # the Micro-USB shell passes 1.6 mm from this hole
+            base.extend([op(disk(x, y, 2.2), wall, PICO_FACE - pico["usb_height"] - 0.2), op(disk(x, y, 1.6), wall, top)])
+        else:
+            base.append(op(disk(x, y, 2.2 if top == PICO_FACE else 2.6), wall, top))
         base.extend(
             [
-                op(disk(x, y, 3.6), wall, PCB_Z),
-                op(disk(x, y, 1), PCB_Z - 10, PCB_Z + 0.1, True),
+                op(disk(x, y, screw["clearance"]), -1, top + 1, True),
+                op(disk(x, y, screw["head"]), -1, screw["head_depth"], True),
             ]
         )
-    px, py = pico["xy"][0] + O, pico["xy"][1] + O
-    usb_y = py + 10.5
-    base.append(
-        op(box(-1, usb_y - 8, wall + 1, usb_y + 8), PICO_FACE - 7, PICO_FACE + 2.6, True)
-    )
+    for x, y in CAM_HOLES:
+        if not np.isclose([x, y], SCREWS[0]).all():
+            base.append(op(disk(x, y, 2), wall, CAM_FRONT))
+    for x, y in PICO_HOLES[:1] + PICO_HOLES[2:3]:
+        base.append(op(disk(x, y, 1.5), wall, PICO_FACE))
+    usb_x, usb_z = PX + 10.5, PICO_FACE - pico["usb_height"] / 2
+    base.append(op(box(usb_x - 5.4, D - wall - 1, usb_x + 5.4, D + 1), max(usb_z - 3.4, wall), usb_z + 3.4, True))
+    base.append(op(box(usb_x - 3.5, -1, usb_x + 3.5, wall + 1), PICO_FACE - pico["debug_height"] - 0.6, PICO_FACE + 0.4, True))
+    bootsel = (PX + pico["bootsel"][0], PY + 51 - pico["bootsel"][1])
+    base.append(op(disk(*bootsel, 1.6), -1, wall + 1, True))
+    add("base", "背面ケース", base, "#455c68", "base", True)
 
-    cx, cy = cam["xy"][0] + O, cam["xy"][1] + O
     size = cam["size"]
-    center = (cx + cam["lens_offset"][0], cy + cam["lens_offset"][1])
-    base.append(op(disk(*center, cam["window_diameter"] / 2), -1, wall + 1, True))
-    cam_screws = [
-        (x, y) for x in (cx - 3, cx + size + 3) for y in (cy + 8, cy + size - 8)
-    ]
-    clamp_poly = box(cx - 0.7, cy - 0.7, cx + size + 0.7, cy + size + 0.7).difference(
-        box(cx + 1.2, cy + 1.2, cx + size - 1.2, cy + size + 0.8)
-    )
-    for x, y in cam_screws:
-        side = cx if x < cx else cx + size
-        clamp_poly = clamp_poly.union(disk(x, y, 2.2)).union(
-            box(min(x, side), y - 1.4, max(x, side), y + 1.4)
-        )
-        base.extend(
-            [
-                op(disk(x, y, 2.2), wall, CAM_BACK),
-                op(disk(x, y, 0.8), wall + 0.6, CAM_BACK + 0.1, True),
-            ]
-        )
-    for x in (cx, cx + size - 1.2):
-        for y in (cy, cy + size - 1.2):
-            base.append(op(box(x, y, x + 1.2, y + 1.2), wall, CAM_FRONT))
-    add("base", "背面ケース・カメラ受け", base, "#455c68", "base", True)
+    cam_board = [op(box(CX, CY, CX + size, CY + size), CAM_FRONT, CAM_BACK)]
+    for x, y in CAM_HOLES:
+        cam_board.append(op(disk(x, y, 1.6), CAM_FRONT - 0.1, CAM_BACK + 0.1, True))
+    add("camera_board", "OV7675 B0070・レンズは背面向き", cam_board, "#d74238", "camera")
+    half = cam["lens_body"] / 2
+    add("camera_lens", "カメラモジュール・高さは要実測", [op(box(LENS[0] - half, LENS[1] - half, LENS[0] + half, LENS[1] + half), CAM_TIP + 0.15, CAM_FRONT)], "#202b36", "camera")
+    add("camera_glass", "カメラ光学面", [op(disk(*LENS, 2.5), CAM_TIP, CAM_TIP + 0.15)], "#397986", "camera")
+    (hx, hy), rows = cam["pins"]["first"], cam["pins"]["pitch_rows"]
+    header = box(CX + size - hx + 1.27, CY + hy + rows - 1.27, CX + size - hx - 2.54 * cam["pins"]["count"] + 1.27, CY + hy + 1.27)
+    add("camera_header", "カメラ2×10ヘッダ・キャリアへ直付け", [op(header, CAM_BACK, PCB_Z)], "#252c32", "camera")
+    spacer = [op(disk(*SCREWS[0], 2.2), CAM_BACK, PCB_Z), op(disk(*SCREWS[0], screw["clearance"]), CAM_BACK - 0.1, PCB_Z + 0.1, True)]
+    add("camera_spacer", "カメラ上角のスペーサー・はんだ付け前に挟む", spacer, "#83999c", "retainer", True)
 
-    clamp = [op(clamp_poly, CAM_BACK, CAM_BACK + 1.6)]
-    for x, y in cam_screws:
-        clamp.append(op(disk(x, y, 1.1), CAM_BACK - 0.1, CAM_BACK + 1.7, True))
-    add(
-        "camera_retainer",
-        "カメラ裏押さえ・M2ねじ4本",
-        clamp,
-        "#83999c",
-        "retainer",
-        True,
-    )
-    add(
-        "camera_board",
-        "OV7675 B0070・背面向き",
-        [op(box(cx, cy, cx + size, cy + size), CAM_FRONT, CAM_BACK)],
-        "#d74238",
-        "camera",
-    )
-    add(
-        "camera_lens",
-        "カメラレンズ・高さは仮値",
-        [op(disk(*center, cam["lens_diameter"] / 2), CAM_TIP + 0.15, CAM_FRONT)],
-        "#202b36",
-        "camera",
-    )
-    add(
-        "camera_glass",
-        "カメラ光学面",
-        [op(disk(*center, cam["lens_diameter"] * 0.29), CAM_TIP, CAM_TIP + 0.15)],
-        "#397986",
-        "camera",
-    )
-    add(
-        "camera_header",
-        "カメラヘッダ・上辺と仮定",
-        [
-            op(
-                box(cx + 2.55, cy + size - 4.8, cx + 27.95, cy + size + 0.3),
-                CAM_BACK,
-                CAM_BACK + cam["rear_connector_depth"],
-            )
-        ],
-        "#252c32",
-        "camera",
-    )
+    pico_ops = [op(box(PX, PY, PX + 21, PY + 51), PICO_FACE, PICO_BACK)]
+    for x, y in PICO_HOLES:
+        pico_ops.append(op(disk(x, y, 1.05), PICO_FACE - 0.1, PICO_BACK + 0.1, True))
+    add("pico", "Pico 2 H・部品面は背面側", pico_ops, "#32976d", "pico")
+    add("pico_headers", "Pico 2 Hのヘッダ・キャリアへ直付け", [op(box(PX + x - 1.25, PY + 0.1, PX + x + 1.25, PY + 50.9), PICO_BACK, PCB_Z) for x in (1.61, 19.39)], "#343b42", "pico")
+    add("rp2350", "RP2350", [op(box(PX + 7, PY + 22, PX + 14, PY + 29), PICO_FACE - 0.9, PICO_FACE)], "#233038", "pico")
+    add("bootsel", "BOOTSEL・背面の穴から押す", [op(box(bootsel[0] - 1.5, bootsel[1] - 2, bootsel[0] + 1.5, bootsel[1] + 2), PICO_FACE - 1.5, PICO_FACE)], "#f1eade", "pico")
+    usb = [
+        op(box(usb_x - 4, PY + 51 - 4.2, usb_x + 4, PY + 51 + pico["usb_overhang"]), PICO_FACE - pico["usb_height"], PICO_FACE),
+        op(box(usb_x - 3.25, PY + 51 - 3, usb_x + 3.25, PY + 51 + pico["usb_overhang"] + 0.1), PICO_FACE - pico["usb_height"] + 0.45, PICO_FACE - 0.45, True),
+    ]
+    add("usb", "Micro-USB・下辺の開口へ", usb, "#aeb8bb", "pico")
+    add("debug", "SWDコネクタ・上辺の開口へ", [op(box(usb_x - 2.5, PY, usb_x + 2.5, PY + 4.3), PICO_FACE - pico["debug_height"], PICO_FACE)], "#f1eade", "pico")
 
     lid = [op(rounded(0, 0, W, D, 4), H, TOP)]
-    clearance = C["fit_clearance"]
-    lip = rounded(
-        wall + clearance,
-        wall + clearance,
-        W - wall - clearance,
-        D - wall - clearance,
-        2,
-    )
-    lip = lip.difference(
-        rounded(
-            wall + clearance + 1.2,
-            wall + clearance + 1.2,
-            W - wall - clearance - 1.2,
-            D - wall - clearance - 1.2,
-            1,
-        )
-    )
-    buttons = [(x + O, y + O) for x, y in P["buttons"]["centers"]]
+    lip = rounded(wall + clearance, wall + clearance, W - wall - clearance, D - wall - clearance, 2)
+    lip = lip.difference(rounded(wall + clearance + 1.2, wall + clearance + 1.2, W - wall - clearance - 1.2, D - wall - clearance - 1.2, 1))
     for x, y in SCREWS:
-        lip = lip.difference(disk(x, y, 4))
-    for x, y in buttons:
-        lip = lip.difference(disk(x, y, 4.5))
+        lip = lip.difference(disk(x, y, 3))
     lid.append(op(lip, H - 1.8, H))
     for x, y in SCREWS:
-        lid.extend(
-            [
-                op(disk(x, y, 3), PCB_TOP, H),
-                op(disk(x, y, 1.4), PCB_TOP - 0.1, TOP + 1, True),
-                op(disk(x, y, 2.65), TOP - 1.2, TOP + 1, True),
-            ]
-        )
+        lid.extend([op(disk(x, y, 2.3), PCB_TOP, H), op(disk(x, y, screw["pilot"]), PCB_TOP - 0.1, TOP - 0.8, True)])
 
-    lx, ly = lcd["xy"][0] + O, lcd["xy"][1] + O
     lw, ld = lcd["size"]
-    ltop = LCD_BOTTOM + lcd["pcb_thickness"]
-    lcd_holes = [(lx + x, ly + y) for x in (2.5, lw - 2.5) for y in (2.5, ld - 2.5)]
-    lcd_ops = [op(box(lx, ly, lx + lw, ly + ld), LCD_BOTTOM, ltop)]
-    for x, y in lcd_holes:
-        lcd_ops.append(op(disk(x, y, 1), LCD_BOTTOM - 0.1, ltop + 0.1, True))
-        lid.extend(
-            [
-                op(disk(x, y, 2.3), ltop, H),
-                op(disk(x, y, 0.65), ltop - 0.1, TOP - 0.6, True),
-            ]
-        )
-    ax, ay = lx + lcd["active_origin"][0], ly + lcd["active_origin"][1]
-    aa, margin = lcd["active_size"], lcd["window_margin"]
-    lid.append(
-        op(
-            box(ax - margin, ay - margin, ax + aa + margin, ay + aa + margin),
-            H - 1,
-            TOP + 1,
-            True,
-        )
-    )
-    add("lcd_board", "LCD基板・M1.6ねじ4本", lcd_ops, "#175989", "lcd")
-    add(
-        "lcd_glass",
-        "LCDガラス",
-        [
-            op(
-                box(lx + 5, ly + 0.24, lx + 38.72, ly + 31.76),
-                ltop,
-                H - lcd["face_gap"] - 0.03,
-            )
-        ],
-        "#131d27",
-        "lcd",
-    )
-    add(
-        "lcd_active",
-        "表示域 27.72 mm角",
-        [
-            op(
-                box(ax, ay, ax + aa, ay + aa),
-                H - lcd["face_gap"] - 0.03,
-                H - lcd["face_gap"],
-            )
-        ],
-        "#91c7ce",
-        "lcd",
-    )
-    add(
-        "lcd_header",
-        "LCD背面ヘッダ・仮寸法",
-        [op(box(lx + 0.2, ly + 5.2, lx + 2.8, ly + 25.5), PCB_TOP, LCD_BOTTOM)],
-        "#252c32",
-        "lcd",
-    )
+    lcd_ops = [op(box(LX, LY, LX + lw, LY + ld), LCD_BOTTOM, LCD_TOP)]
+    for x, y in LCD_HOLES:
+        lcd_ops.append(op(disk(x, y, lcd["hole_diameter"] / 2), LCD_BOTTOM - 0.1, LCD_TOP + 0.1, True))
+        lid.extend([op(disk(x, y, 1.75), LCD_TOP, H), op(disk(x, y, 0.8), LCD_BOTTOM + 0.2, LCD_TOP)])
+    gx, gy, gw, gd = lcd["glass"]
+    ax, ay, aw, ad = lcd["active"]
+    m = lcd["window_margin"]
+    lid.append(op(box(LX + ax - m, LY + ay - m, LX + ax + aw + m, LY + ay + ad + m), H - 1, TOP + 1, True))
+    add("lcd_board", "LCD基板・ヘッダをキャリアへ直付け", lcd_ops, "#175989", "lcd")
+    add("lcd_glass", "LCDガラス", [op(box(LX + gx, LY + gy, LX + gx + gw, LY + gy + gd), LCD_TOP, H - lcd["face_gap"] - 0.03)], "#131d27", "lcd")
+    add("lcd_active", "表示域 27.72 mm角", [op(box(LX + ax, LY + ay, LX + ax + aw, LY + ay + ad), H - lcd["face_gap"] - 0.03, H - lcd["face_gap"])], "#91c7ce", "lcd")
+    (px1, py1), n = lcd["pins"]["first"], lcd["pins"]["count"]
+    add("lcd_header", "LCDヘッダ・上辺", [op(box(LX + px1 - 1.27, LY + py1 - 1.25, LX + px1 + 2.54 * (n - 1) + 1.27, LY + py1 + 1.25), PCB_TOP, LCD_BOTTOM)], "#252c32", "lcd")
 
     board = [op(Polygon(OUTLINE), PCB_Z, PCB_TOP)]
     for x, y in SCREWS:
-        board.append(op(disk(x, y, 1.35), PCB_Z - 0.1, PCB_TOP + 0.1, True))
-    for i, (bx, by) in enumerate(buttons):
-        lid.extend(
-            [
-                op(disk(bx, by, 4.2), H - 2.5, H),
-                op(disk(bx, by, 3.7), H - 2.6, H, True),
-                op(disk(bx, by, 2.7), H, TOP + 1, True),
-            ]
-        )
-        tip = PCB_TOP + P["buttons"]["switch_height"]
-        button = [
-            op(disk(bx, by, 1.5), tip + P["buttons"]["free_gap"], H - 0.8),
-            op(disk(bx, by, 3.4), H - 1.3, H - 0.1),
-            op(disk(bx, by, 2.4), H - 0.2, TOP + 1),
+        board.append(op(disk(x, y, screw["clearance"]), PCB_Z - 0.1, PCB_TOP + 0.1, True))
+    body_top = PCB_TOP + btn["body_height"]
+    tip = PCB_TOP + btn["switch_height"]
+    stem = btn["stem_diameter"] / 2
+    for i, (bx, by) in enumerate(BUTTONS):
+        lid.append(op(disk(bx, by, 2.75), H - 0.1, TOP + 1, True))
+        # cap over the stem; its flange under the cover keeps it from falling out
+        cap = [
+            op(disk(bx, by, 3.6), body_top + 0.3, body_top + 1.3),
+            op(disk(bx, by, 2.5), body_top + 1.3, TOP + 0.8),
+            op(disk(bx, by, stem + 0.2), body_top + 0.2, tip + btn["free_gap"], True),
         ]
-        add(
-            f"button_{i + 1}",
-            ["次へボタン・押し子", "承認ボタン・押し子"][i],
-            button,
-            ["#cae0e1", "#e5ac56"][i],
-            "button",
-            True,
-        )
+        add(f"button_{i + 1}", ["次へボタン", "承認ボタン", "拒否ボタン"][i], cap, ["#cae0e1", "#e5ac56", "#c96f5b"][i], "button", True)
         add(
             f"switch_{i + 1}",
             "TVDP01-G73BB",
-            [
-                op(box(bx - 3, by - 3, bx + 3, by + 3), PCB_TOP, PCB_TOP + 3.8),
-                op(disk(bx, by, 1.7), PCB_TOP + 3.8, tip),
-            ],
+            [op(box(bx - 3, by - 3, bx + 3, by + 3), PCB_TOP, body_top), op(disk(bx, by, stem), body_top, tip)],
             "#232c34",
             "board",
         )
-    add("lid", "前カバー・液晶の固定柱", lid, "#e4e6dc", "lid", True)
-    add("carrier", "KiCadキャリア基板・ケースねじで挟む", board, "#287567", "board")
-
-    socket_z = PCB_Z - pico["socket_height"]
-    pico_z = PICO_FACE + pico["pcb_thickness"]
-    sockets, headers = [], []
-    for y in (py + 1.61, py + 19.39):
-        row = box(px + 0.1, y - 1.25, px + 50.9, y + 1.25)
-        sockets.append(op(row, socket_z, PCB_Z))
-        headers.append(op(row, pico_z, socket_z))
-    add("pico_sockets", "Pico用ソケット 1×20 ×2・基板裏", sockets, "#252c32", "board")
-    add("pico_headers", "Pico 2 Hの実装済みヘッダ", headers, "#343b42", "pico")
-    pico_ops = [op(box(px, py, px + 51, py + 21), PICO_FACE, pico_z)]
-    for x in (px + 2, px + 49):
-        for y in (py + 4.8, py + 16.2):
-            pico_ops.append(op(disk(x, y, 1.05), PICO_FACE - 0.1, pico_z + 0.1, True))
-    add("pico", "Pico 2 H・部品面は背面側", pico_ops, "#32976d", "pico")
-    add(
-        "rp2350",
-        "RP2350",
-        [op(box(px + 23, py + 7, px + 30, py + 14), PICO_FACE - 1.2, PICO_FACE)],
-        "#233038",
-        "pico",
-    )
-    add(
-        "bootsel",
-        "BOOTSEL・基板を外して操作",
-        [op(box(px + 9, py + 7.6, px + 12, py + 13.4), PICO_FACE - 1.5, PICO_FACE)],
-        "#f1eade",
-        "pico",
-    )
-    usb_z = PICO_FACE - pico["usb_height"]
-    usb = [
-        op(box(px - 1.3, usb_y - 4, px + 4.5, usb_y + 4), usb_z, PICO_FACE),
-        op(
-            box(px - 1.4, usb_y - 3.25, px + 3, usb_y + 3.25),
-            usb_z + 0.45,
-            PICO_FACE - 0.45,
-            True,
-        ),
-    ]
-    add("usb", "Micro-USB・開口16 mm幅", usb, "#aeb8bb", "pico")
-    connectors = []
-    for c in P["connectors"].values():
-        x, y, w, d = c["rect"]
-        z0, z1 = (PCB_TOP, PCB_TOP + 8.5) if c["side"] == "front" else (socket_z, PCB_Z)
-        connectors.append(op(box(x + O, y + O, x + O + w, y + O + d), z0, z1))
-    add(
-        "harness_sockets", "J3 LCD / J5 UART / J4カメラ(裏)", connectors, "#252c32", "board"
-    )
+    add("lid", "前カバー", lid, "#e4e6dc", "lid", True)
+    add("carrier", "キャリア基板", board, "#287567", "board")
     add(
         "case_screw_heads",
-        "M2.5×25 ケース・基板固定ねじ",
-        [op(disk(x, y, 2.3), TOP - 1.2, TOP + 0.4) for x, y in SCREWS],
+        "M2×16 なべ小ねじ・背面から",
+        [op(disk(x, y, 1.9), 0, screw["head_depth"]) for x, y in SCREWS],
         "#a6b3b9",
-        "lid",
+        "base",
     )
     return parts
 

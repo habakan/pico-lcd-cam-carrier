@@ -1,21 +1,18 @@
 {
   "units": "mm",
   "assumptions": [
-    "User approved an adjustable prototype on 2026-10-10; physical measurements are pending.",
-    "Rev C (2026-10-10): carrier shrunk to 58 x 38 mm, Pico 2 H moved to the carrier back, camera moved to the rear case. All XY values here are PCB coordinates.",
-    "LCD AA offset [7.11, 2.14] uses a landscape interpretation of the published drawing; verify orientation and header side against the actual module.",
-    "Camera lens height ~2-3 mm and diameter ~6-7 mm were estimated from a photo on 2026-10-10 (modelled 3 / 7 mm); lens center, rear header orientation (assumed along the upper edge) remain provisional.",
-    "Camera harness: 2x10 pin socket with short wires (11 mm deep). Dupont jumper housings need ~16.5 mm plus bend room and do not fit.",
-    "Camera clamp contacts 1.2 mm along the left/right edges; confirm these contact areas are free of components.",
-    "Pico 2 H socket plus male header plastic is provisionally 11 mm; adjust to the actual socket stack.",
-    "Switch height is 7.3 mm with the supplied key cap removed; verify before fitting printed plungers.",
-    "Carrier PCB placement is mechanical only; electrical routing and KiCad ERC/DRC remain unfinished."
+    "Rev D (2026-10-27): Pico 2 H, B0070 and LCD headers are soldered straight into the carrier, so each board sits on its 2.5 mm header plastic. XY values are carrier PCB coordinates viewed from the front (KiCad F side); B-side parts appear mirrored.",
+    "LCD outline, holes, glass and active area come from Akizuki's M154-240240-RGB-8 drawing (portrait, header along the top). The pin row's distance from the top edge (2.5 mm) is read off the drawing and should be measured.",
+    "B0070 outline, holes, lens centre and header come from Akizuki's b0070_dim.pdf. The header is assumed to be on the side opposite the lens with its plastic between the board and the carrier; lens height 3.5 mm is the 3.36 mm module plus adhesive and needs measuring.",
+    "Pico 2 H outline, holes and pin rows follow the Raspberry Pi datasheet. BOOTSEL position, USB height and the debug connector envelope are approximate.",
+    "Through-hole leads from the LCD, camera, Pico and switches land under neighbouring boards and must be trimmed to 1 mm or less after soldering.",
+    "Switch height 7.3 mm is from the TVDP01-G73BB drawing; body height 3.5 mm is approximate."
   ],
   "parts": [
     {
       "name": "base",
       "watertight": true,
-      "volume_mm3": 26973.258,
+      "volume_mm3": 17403.351,
       "bounds": [
         [
           0.0,
@@ -23,27 +20,9 @@
           0.0
         ],
         [
-          63.4,
-          43.4,
-          39.9
-        ]
-      ],
-      "printable": true
-    },
-    {
-      "name": "camera_retainer",
-      "watertight": true,
-      "volume_mm3": 356.857,
-      "bounds": [
-        [
-          7.5,
-          6.0,
-          7.6
-        ],
-        [
-          48.4,
-          37.9,
-          9.2
+          61.4,
+          59.4,
+          18.5
         ]
       ],
       "printable": true
@@ -51,17 +30,17 @@
     {
       "name": "camera_board",
       "watertight": true,
-      "volume_mm3": 1488.4,
+      "volume_mm3": 1437.075,
       "bounds": [
         [
-          12.7,
-          6.7,
-          6.0
+          4.2,
+          4.2,
+          6.5
         ],
         [
-          43.2,
-          37.2,
-          7.6
+          34.7,
+          34.7,
+          8.1
         ]
       ],
       "printable": false
@@ -69,17 +48,17 @@
     {
       "name": "camera_lens",
       "watertight": true,
-      "volume_mm3": 109.368,
+      "volume_mm3": 128.774,
       "bounds": [
         [
-          24.45,
-          18.45,
+          16.36,
+          13.75,
           3.15
         ],
         [
-          31.45,
-          25.45,
-          6.0
+          22.56,
+          19.95,
+          6.5
         ]
       ],
       "printable": false
@@ -87,16 +66,16 @@
     {
       "name": "camera_glass",
       "watertight": true,
-      "volume_mm3": 1.936,
+      "volume_mm3": 2.937,
       "bounds": [
         [
-          25.92,
-          19.92,
+          16.96,
+          14.35,
           3.0
         ],
         [
-          29.98,
-          23.98,
+          21.96,
+          19.35,
           3.15
         ]
       ],
@@ -105,215 +84,53 @@
     {
       "name": "camera_header",
       "watertight": true,
-      "volume_mm3": 1424.94,
+      "volume_mm3": 322.58,
       "bounds": [
         [
-          15.25,
-          32.4,
-          7.6
+          6.76,
+          29.62,
+          8.1
         ],
         [
-          40.65,
-          37.5,
-          18.6
+          32.16,
+          34.7,
+          10.6
         ]
       ],
       "printable": false
     },
     {
-      "name": "lcd_board",
+      "name": "camera_spacer",
       "watertight": true,
-      "volume_mm3": 1663.811,
+      "volume_mm3": 28.429,
       "bounds": [
         [
-          9.7,
-          5.7,
-          36.1
+          5.745,
+          5.73,
+          8.1
         ],
         [
-          53.42,
-          37.7,
-          37.3
-        ]
-      ],
-      "printable": false
-    },
-    {
-      "name": "lcd_glass",
-      "watertight": true,
-      "volume_mm3": 2412.679,
-      "bounds": [
-        [
-          14.7,
-          5.94,
-          37.3
-        ],
-        [
-          48.42,
-          37.46,
-          39.57
-        ]
-      ],
-      "printable": false
-    },
-    {
-      "name": "lcd_active",
-      "watertight": true,
-      "volume_mm3": 23.052,
-      "bounds": [
-        [
-          16.81,
-          7.84,
-          39.57
-        ],
-        [
-          44.53,
-          35.56,
-          39.6
-        ]
-      ],
-      "printable": false
-    },
-    {
-      "name": "lcd_header",
-      "watertight": true,
-      "volume_mm3": 596.414,
-      "bounds": [
-        [
-          9.9,
-          10.9,
-          24.8
-        ],
-        [
-          12.5,
-          31.2,
-          36.1
-        ]
-      ],
-      "printable": false
-    },
-    {
-      "name": "button_1",
-      "watertight": true,
-      "volume_mm3": 151.015,
-      "bounds": [
-        [
-          53.1,
-          11.3,
-          32.3
-        ],
-        [
-          59.9,
-          18.1,
-          43.3
+          10.145,
+          10.13,
+          10.6
         ]
       ],
       "printable": true
     },
     {
-      "name": "switch_1",
+      "name": "pico",
       "watertight": true,
-      "volume_mm3": 168.487,
+      "volume_mm3": 1057.185,
       "bounds": [
         [
-          53.5,
-          11.7,
-          24.8
+          36.2,
+          4.4,
+          7.1
         ],
         [
-          59.5,
-          17.7,
-          32.1
-        ]
-      ],
-      "printable": false
-    },
-    {
-      "name": "button_2",
-      "watertight": true,
-      "volume_mm3": 151.015,
-      "bounds": [
-        [
-          53.1,
-          25.3,
-          32.3
-        ],
-        [
-          59.9,
-          32.1,
-          43.3
-        ]
-      ],
-      "printable": true
-    },
-    {
-      "name": "switch_2",
-      "watertight": true,
-      "volume_mm3": 168.487,
-      "bounds": [
-        [
-          53.5,
-          25.7,
-          24.8
-        ],
-        [
-          59.5,
-          31.7,
-          32.1
-        ]
-      ],
-      "printable": false
-    },
-    {
-      "name": "lid",
-      "watertight": true,
-      "volume_mm3": 6163.634,
-      "bounds": [
-        [
-          0.0,
-          0.0,
-          24.8
-        ],
-        [
-          63.4,
-          43.4,
-          42.3
-        ]
-      ],
-      "printable": true
-    },
-    {
-      "name": "carrier",
-      "watertight": true,
-      "volume_mm3": 3486.661,
-      "bounds": [
-        [
-          2.7,
-          2.7,
-          23.2
-        ],
-        [
-          60.7,
-          40.7,
-          24.8
-        ]
-      ],
-      "printable": false
-    },
-    {
-      "name": "pico_sockets",
-      "watertight": true,
-      "volume_mm3": 2159.0,
-      "bounds": [
-        [
-          5.3,
-          11.56,
-          14.7
-        ],
-        [
-          56.1,
-          31.84,
-          23.2
+          57.2,
+          55.4,
+          8.1
         ]
       ],
       "printable": false
@@ -324,32 +141,14 @@
       "volume_mm3": 635.0,
       "bounds": [
         [
-          5.3,
-          11.56,
-          12.2
+          36.56,
+          4.5,
+          8.1
         ],
         [
-          56.1,
-          31.84,
-          14.7
-        ]
-      ],
-      "printable": false
-    },
-    {
-      "name": "pico",
-      "watertight": true,
-      "volume_mm3": 1057.185,
-      "bounds": [
-        [
-          5.2,
-          11.2,
-          11.2
-        ],
-        [
-          56.2,
-          32.2,
-          12.2
+          56.84,
+          55.3,
+          10.6
         ]
       ],
       "printable": false
@@ -357,17 +156,17 @@
     {
       "name": "rp2350",
       "watertight": true,
-      "volume_mm3": 58.8,
+      "volume_mm3": 44.1,
       "bounds": [
         [
-          28.2,
-          18.2,
-          10.0
+          43.2,
+          26.4,
+          6.2
         ],
         [
-          35.2,
-          25.2,
-          11.2
+          50.2,
+          33.4,
+          7.1
         ]
       ],
       "printable": false
@@ -375,17 +174,17 @@
     {
       "name": "bootsel",
       "watertight": true,
-      "volume_mm3": 26.1,
+      "volume_mm3": 18.0,
       "bounds": [
         [
-          14.2,
-          18.8,
-          9.7
+          45.2,
+          42.9,
+          5.6
         ],
         [
-          17.2,
-          24.6,
-          11.2
+          48.2,
+          46.9,
+          7.1
         ]
       ],
       "printable": false
@@ -393,35 +192,251 @@
     {
       "name": "usb",
       "watertight": true,
-      "volume_mm3": 89.73,
+      "volume_mm3": 71.7,
       "bounds": [
         [
-          3.9,
-          17.7,
-          7.7
+          42.7,
+          51.2,
+          4.2
         ],
         [
-          9.7,
-          25.7,
-          11.2
+          50.7,
+          56.7,
+          7.1
         ]
       ],
       "printable": false
     },
     {
-      "name": "harness_sockets",
+      "name": "debug",
       "watertight": true,
-      "volume_mm3": 1636.522,
+      "volume_mm3": 62.35,
       "bounds": [
         [
-          15.2,
+          44.2,
+          4.4,
+          4.2
+        ],
+        [
+          49.2,
+          8.7,
+          7.1
+        ]
+      ],
+      "printable": false
+    },
+    {
+      "name": "lcd_board",
+      "watertight": true,
+      "volume_mm3": 1663.811,
+      "bounds": [
+        [
+          10.7,
           4.2,
           14.7
         ],
         [
-          42.1,
-          31.02,
-          33.3
+          42.7,
+          47.92,
+          15.9
+        ]
+      ],
+      "printable": false
+    },
+    {
+      "name": "lcd_glass",
+      "watertight": true,
+      "volume_mm3": 2412.679,
+      "bounds": [
+        [
+          10.94,
+          9.2,
+          15.9
+        ],
+        [
+          42.46,
+          42.92,
+          18.17
+        ]
+      ],
+      "printable": false
+    },
+    {
+      "name": "lcd_active",
+      "watertight": true,
+      "volume_mm3": 23.052,
+      "bounds": [
+        [
+          12.84,
+          10.65,
+          18.17
+        ],
+        [
+          40.56,
+          38.37,
+          18.2
+        ]
+      ],
+      "printable": false
+    },
+    {
+      "name": "lcd_header",
+      "watertight": true,
+      "volume_mm3": 127.0,
+      "bounds": [
+        [
+          16.54,
+          5.45,
+          12.2
+        ],
+        [
+          36.86,
+          7.95,
+          14.7
+        ]
+      ],
+      "printable": false
+    },
+    {
+      "name": "button_1",
+      "watertight": true,
+      "volume_mm3": 88.546,
+      "bounds": [
+        [
+          43.1,
+          13.1,
+          16.0
+        ],
+        [
+          50.3,
+          20.3,
+          21.7
+        ]
+      ],
+      "printable": true
+    },
+    {
+      "name": "switch_1",
+      "watertight": true,
+      "volume_mm3": 162.456,
+      "bounds": [
+        [
+          43.7,
+          13.7,
+          12.2
+        ],
+        [
+          49.7,
+          19.7,
+          19.5
+        ]
+      ],
+      "printable": false
+    },
+    {
+      "name": "button_2",
+      "watertight": true,
+      "volume_mm3": 88.546,
+      "bounds": [
+        [
+          43.1,
+          26.1,
+          16.0
+        ],
+        [
+          50.3,
+          33.3,
+          21.7
+        ]
+      ],
+      "printable": true
+    },
+    {
+      "name": "switch_2",
+      "watertight": true,
+      "volume_mm3": 162.456,
+      "bounds": [
+        [
+          43.7,
+          26.7,
+          12.2
+        ],
+        [
+          49.7,
+          32.7,
+          19.5
+        ]
+      ],
+      "printable": false
+    },
+    {
+      "name": "button_3",
+      "watertight": true,
+      "volume_mm3": 88.546,
+      "bounds": [
+        [
+          43.1,
+          39.1,
+          16.0
+        ],
+        [
+          50.3,
+          46.3,
+          21.7
+        ]
+      ],
+      "printable": true
+    },
+    {
+      "name": "switch_3",
+      "watertight": true,
+      "volume_mm3": 162.456,
+      "bounds": [
+        [
+          43.7,
+          39.7,
+          12.2
+        ],
+        [
+          49.7,
+          45.7,
+          19.5
+        ]
+      ],
+      "printable": false
+    },
+    {
+      "name": "lid",
+      "watertight": true,
+      "volume_mm3": 7484.633,
+      "bounds": [
+        [
+          0.0,
+          0.0,
+          12.2
+        ],
+        [
+          61.4,
+          59.4,
+          20.9
+        ]
+      ],
+      "printable": true
+    },
+    {
+      "name": "carrier",
+      "watertight": true,
+      "volume_mm3": 4810.941,
+      "bounds": [
+        [
+          2.7,
+          2.7,
+          10.6
+        ],
+        [
+          58.7,
+          56.7,
+          12.2
         ]
       ],
       "printable": false
@@ -429,23 +444,23 @@
     {
       "name": "case_screw_heads",
       "watertight": true,
-      "volume_mm3": 106.058,
+      "volume_mm3": 54.282,
       "bounds": [
         [
-          3.4,
-          3.4,
-          41.1
+          4.8,
+          4.5,
+          0.0
         ],
         [
-          60.0,
-          40.0,
-          42.7
+          54.3,
+          55.3,
+          1.2
         ]
       ],
       "printable": false
     }
   ],
   "interferences": [],
-  "checked_pairs": 253,
+  "checked_pairs": 276,
   "scope": "Nominal simplified solid envelopes only. Wiring bends, insertion paths, optical field and physical tolerances need physical confirmation."
 }

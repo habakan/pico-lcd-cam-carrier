@@ -121,7 +121,7 @@ def export_views(parts, size, out):
     draw.text((55, 32), "実印  /  Pico 2 H ケース試作", font=font(38), fill="#203842")
     draw.text(
         (57, 94),
-        f"REV C   ·   {dimensions}   ·   同じ形状データからSTLと完成イメージを生成",
+        f"REV D   ·   {dimensions}   ·   同じ形状データからSTLと完成イメージを生成",
         font=font(20),
         fill="#57686c",
     )
@@ -135,14 +135,14 @@ def export_views(parts, size, out):
         draw.text((60 + 800 * i, 153), label, font=font(25), fill="#203842")
     draw.line((55, 826, 1545, 826), fill="#d5ddd9", width=2)
     for x, title, note in [
-        (60, "液晶 / カメラ", "液晶は前カバー、カメラは背面ケースへ固定しハーネス接続"),
-        (820, "Pico / ボタン", "Picoは基板裏のソケットへ。押し子でスイッチを操作"),
+        (60, "液晶 / カメラ", "LCDとカメラはヘッダをキャリアへ直付け。カメラは背面の窓へ"),
+        (820, "Pico / ボタン", "Picoはカメラと並べて基板裏へ直付け。ボタン3個はキャップで操作"),
     ]:
         draw.text((x, 856), title, font=font(25), fill="#203842")
         draw.text((x, 899), note, font=font(19), fill="#52636a")
     draw.text(
         (60, 955),
-        "調整用の試作：レンズ高さ・コネクタ・取付面は未実測。キャリア基板は未配線。",
+        "寸法はメーカー図面から。レンズ高さ・ヘッダ位置は要実測。キャリア基板は未配線。",
         font=font(19),
         fill="#836334",
     )
@@ -153,7 +153,7 @@ def export_views(parts, size, out):
     exploded.paste(render(parts, 1050, 1000, "exploded"), (25, 100))
     d.text(
         (45, 1130),
-        "上から：前カバー → 押し子 → LCD → 基板 → Pico → 裏押さえ → カメラ → 背面ケース",
+        "上から：前カバー → ボタンキャップ → LCD → 基板 → Pico / スペーサー → カメラ → 背面ケース",
         font=font(16),
         fill="#52636a",
     )
