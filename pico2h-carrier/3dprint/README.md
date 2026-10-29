@@ -52,7 +52,6 @@
 | パラメータ | 現在値 | 測る箇所 |
 |---|---|---|
 | `camera.lens_height` | 3.5 mm | カメラ基板のレンズ面からモジュール先端まで |
-| `camera.standoff` | 2.5 mm | カメラのヘッダ樹脂の厚さ。樹脂がレンズ側にある場合は、裏面部品の高さに置き換える |
 | `pico.bootsel` | [7.0, 11.7] | Pico のピン1側の長辺・USB端から BOOTSEL 中心（写真から換算） |
 | `pico.usb_height` / `debug_height` | 2.9 / 2.9 mm | Pico 部品面からコネクタ上端 |
 
