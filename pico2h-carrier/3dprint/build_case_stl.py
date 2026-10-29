@@ -243,20 +243,27 @@ def make_parts():
         board.append(op(disk(x, y, screw["clearance"]), PCB_Z - 0.1, PCB_TOP + 0.1, True))
     body_top = PCB_TOP + btn["body_height"]
     tip = PCB_TOP + btn["switch_height"]
-    stem = btn["stem_diameter"] / 2
+    (boss, boss_h), (key, key_h) = btn["stem_boss"], btn["stem_top"]
+    flange = H - btn["free_gap"]
     for i, (bx, by) in enumerate(BUTTONS):
         lid.append(op(disk(bx, by, 2.75), H - 0.1, TOP + 1, True))
-        # cap over the stem; its flange under the cover keeps it from falling out
+        # the cap rests on the 2.4 mm square stem top; its flange stops just under the cover
         cap = [
-            op(disk(bx, by, 3.6), body_top + 0.3, body_top + 1.3),
-            op(disk(bx, by, 2.5), body_top + 1.3, TOP + 0.8),
-            op(disk(bx, by, stem + 0.2), body_top + 0.2, tip + btn["free_gap"], True),
+            op(disk(bx, by, 3.6), flange - 1, flange),
+            op(disk(bx, by, 2.5), flange, TOP + 0.8),
+            op(disk(bx, by, boss / 2 + 0.25), flange - 1.1, flange - 0.4, True),
+            op(rounded(bx - key / 2 - 0.15, by - key / 2 - 0.15, bx + key / 2 + 0.15, by + key / 2 + 0.15, 0.2), flange - 0.5, tip, True),
         ]
         add(f"button_{i + 1}", f"{KEYS[i][0]}ボタン", cap, KEYS[i][1], "button", True)
         add(
             f"switch_{i + 1}",
             "TVDP01-G73BB",
-            [op(box(bx - 3, by - 3, bx + 3, by + 3), PCB_TOP, body_top), op(disk(bx, by, stem), body_top, tip)],
+            [
+                op(box(bx - 3, by - 3, bx + 3, by + 3), PCB_TOP, body_top),
+                op(disk(bx, by, boss / 2), body_top, body_top + boss_h),
+                op(disk(bx, by, 0.75), body_top + boss_h, tip - key_h),
+                op(box(bx - key / 2, by - key / 2, bx + key / 2, by + key / 2), tip - key_h, tip),
+            ],
             "#232c34",
             "board",
         )

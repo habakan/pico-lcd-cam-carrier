@@ -140,9 +140,11 @@ def export_views(parts, size, out):
     ]:
         draw.text((x, 856), title, font=font(25), fill="#203842")
         draw.text((x, 899), note, font=font(19), fill="#52636a")
+    checks = json.loads((out / "case_dimensions.json").read_text())["checks"]
+    status = [c[3].split("：")[0] for c in checks]
     draw.text(
         (60, 955),
-        "寸法はメーカー図面から。レンズ高さ・ヘッダ位置は要実測。キャリア基板は未配線。",
+        f"寸法照合 {len(checks)}項目：一致 {status.count('一致')}・修正 {sum(s.startswith('修正') for s in status)}・要実測 {sum('要実測' in c[3] for c in checks)}。キャリア基板は未配線。",
         font=font(19),
         fill="#836334",
     )
@@ -188,8 +190,12 @@ def export_views(parts, size, out):
         ensure_ascii=False,
         separators=(",", ":"),
     )
+    rows = "".join(
+        f"<tr><td>{part}</td><td>{value}<br><small>{source}</small></td><td>{state}</td></tr>"
+        for part, value, source, state in checks
+    )
     (out / "assembly.html").write_text(
-        template.replace("__DIMENSIONS__", dimensions).replace(
-            "__SCENE_DATA__", payload
-        )
+        template.replace("__DIMENSIONS__", dimensions)
+        .replace("__CHECKS__", rows)
+        .replace("__SCENE_DATA__", payload)
     )

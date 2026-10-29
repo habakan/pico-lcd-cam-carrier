@@ -53,10 +53,8 @@
 |---|---|---|
 | `camera.lens_height` | 3.5 mm | カメラ基板のレンズ面からモジュール先端まで |
 | `camera.standoff` | 2.5 mm | カメラのヘッダ樹脂の厚さ。樹脂がレンズ側にある場合は、裏面部品の高さに置き換える |
-| `lcd.pins.first` | [7.11, 2.5] | LCD 左端・上端から1番ピン中心 |
-| `pico.bootsel` | [10.5, 10.5] | Pico の長辺・USB端から BOOTSEL 中心 |
+| `pico.bootsel` | [7.0, 11.7] | Pico のピン1側の長辺・USB端から BOOTSEL 中心（写真から換算） |
 | `pico.usb_height` / `debug_height` | 2.9 / 2.9 mm | Pico 部品面からコネクタ上端 |
-| `buttons.body_height` | 3.5 mm | スイッチ本体の高さ（ステム除く） |
 
 ## 再生成
 
@@ -74,4 +72,5 @@ STL、3MF、OpenSCAD、GLB、KiCad参照用VRML、画像、HTML、検査レポ�
 
 - 全33パーツが閉じたメッシュで、印刷する11パーツは各1つの連結した立体。STLと3MFを再読込して確認。
 - 公称寸法で496組の体積干渉を計算し、重なり0件（ねじ頭は対象外）。[fit_report.json](fit_report.json)
+- 各部品の寸法をメーカー図面・データシートと照合した結果は `case_dimensions.json` の `checks` と3Dビューに載せています。LCD のピン列、スイッチの軸、BOOTSEL の位置を直しました。
 - スライス・実機印刷、KiCadでの読込・ERC/DRCは未実施。

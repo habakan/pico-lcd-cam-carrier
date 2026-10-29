@@ -2,11 +2,11 @@
   "units": "mm",
   "assumptions": [
     "Rev D (2026-10-30): landscape with a five-switch D-pad left of the LCD and the reject key right of it. Pico 2 H, B0070 and LCD headers are soldered straight into the carrier, so each board sits on its 2.5 mm header plastic. XY values are carrier PCB coordinates viewed from the front (KiCad F side); B-side parts appear mirrored.",
-    "LCD outline, holes, glass and active area come from Akizuki's M154-240240-RGB-8 drawing (portrait, header along the top). The pin row's distance from the top edge (2.5 mm) is read off the drawing and should be measured.",
+    "LCD outline, holes, glass and active area come from Akizuki's M154-240240-RGB-8 drawing (portrait, header along the top). The pin row is 1.5 mm below the top edge.",
     "B0070 outline, holes, lens centre and header come from Akizuki's b0070_dim.pdf. The header is assumed to be on the side opposite the lens with its plastic between the board and the carrier; lens height 3.5 mm is the 3.36 mm module plus adhesive and needs measuring. Its two holes away from the header sit under the D-pad, so printed peg spacers there are clamped by the back case instead of screwed.",
-    "Pico 2 H outline, holes and pin rows follow the Raspberry Pi datasheet. BOOTSEL position, USB height and the debug connector envelope are approximate.",
+    "Pico 2 H outline, holes and pin rows follow the Raspberry Pi datasheet. BOOTSEL (7.0 mm from the pin 1 edge, 11.7 mm from the USB end) is scaled from a top-view photo; USB height and the debug connector envelope are approximate.",
     "Through-hole leads from the LCD, camera, Pico and switches land under neighbouring boards and must be trimmed to 1 mm or less after soldering.",
-    "Switch height 7.3 mm is from the TVDP01-G73BB drawing; body height 3.5 mm is approximate."
+    "Switch body 6.0 x 6.0 x 3.5 mm, total height 7.3 mm and the stem (3.4 mm round boss, 2.4 mm square top 1.8 mm tall) are from the TVDP01-G73BB drawing."
   ],
   "parts": [
     {
@@ -213,13 +213,13 @@
       "volume_mm3": 18.0,
       "bounds": [
         [
-          65.2,
-          42.9,
+          61.7,
+          41.7,
           5.6
         ],
         [
-          68.2,
-          46.9,
+          64.7,
+          45.7,
           7.1
         ]
       ],
@@ -322,12 +322,12 @@
       "bounds": [
         [
           36.04,
-          8.95,
+          7.95,
           12.2
         ],
         [
           56.36,
-          11.45,
+          10.45,
           14.7
         ]
       ],
@@ -336,12 +336,12 @@
     {
       "name": "button_1",
       "watertight": true,
-      "volume_mm3": 88.546,
+      "volume_mm3": 88.412,
       "bounds": [
         [
           13.1,
           15.9,
-          16.0
+          17.3
         ],
         [
           20.3,
@@ -354,7 +354,7 @@
     {
       "name": "switch_1",
       "watertight": true,
-      "volume_mm3": 162.456,
+      "volume_mm3": 149.371,
       "bounds": [
         [
           13.7,
@@ -372,12 +372,12 @@
     {
       "name": "button_2",
       "watertight": true,
-      "volume_mm3": 88.546,
+      "volume_mm3": 88.412,
       "bounds": [
         [
           13.1,
           32.9,
-          16.0
+          17.3
         ],
         [
           20.3,
@@ -390,7 +390,7 @@
     {
       "name": "switch_2",
       "watertight": true,
-      "volume_mm3": 162.456,
+      "volume_mm3": 149.371,
       "bounds": [
         [
           13.7,
@@ -408,12 +408,12 @@
     {
       "name": "button_3",
       "watertight": true,
-      "volume_mm3": 88.546,
+      "volume_mm3": 88.412,
       "bounds": [
         [
           4.6,
           24.4,
-          16.0
+          17.3
         ],
         [
           11.8,
@@ -426,7 +426,7 @@
     {
       "name": "switch_3",
       "watertight": true,
-      "volume_mm3": 162.456,
+      "volume_mm3": 149.371,
       "bounds": [
         [
           5.2,
@@ -444,12 +444,12 @@
     {
       "name": "button_4",
       "watertight": true,
-      "volume_mm3": 88.546,
+      "volume_mm3": 88.412,
       "bounds": [
         [
           21.6,
           24.4,
-          16.0
+          17.3
         ],
         [
           28.8,
@@ -462,7 +462,7 @@
     {
       "name": "switch_4",
       "watertight": true,
-      "volume_mm3": 162.456,
+      "volume_mm3": 149.371,
       "bounds": [
         [
           22.2,
@@ -480,12 +480,12 @@
     {
       "name": "button_5",
       "watertight": true,
-      "volume_mm3": 88.546,
+      "volume_mm3": 88.412,
       "bounds": [
         [
           13.1,
           24.4,
-          16.0
+          17.3
         ],
         [
           20.3,
@@ -498,7 +498,7 @@
     {
       "name": "switch_5",
       "watertight": true,
-      "volume_mm3": 162.456,
+      "volume_mm3": 149.371,
       "bounds": [
         [
           13.7,
@@ -516,12 +516,12 @@
     {
       "name": "button_6",
       "watertight": true,
-      "volume_mm3": 88.546,
+      "volume_mm3": 88.412,
       "bounds": [
         [
           65.3,
           24.4,
-          16.0
+          17.3
         ],
         [
           72.5,
@@ -534,7 +534,7 @@
     {
       "name": "switch_6",
       "watertight": true,
-      "volume_mm3": 162.456,
+      "volume_mm3": 149.371,
       "bounds": [
         [
           65.9,

@@ -1,16 +1,32 @@
 {
   "case": {"face_thickness": 2.4, "wall": 2.4, "fit_clearance": 0.3},
   "carrier": {"size": [76, 54], "thickness": 1.6, "screws": [[5.245, 43.23], [4, 4], [69.7, 3.7], [69.7, 50.7]], "screw": {"clearance": 1.1, "pilot": 0.8, "head": 2.1, "head_depth": 1.2}},
-  "lcd": {"xy": [27.5, 5], "size": [32, 43.72], "standoff": 2.5, "pcb_thickness": 1.2, "glass_height": 2.3, "face_gap": 0.3, "holes": [[2.5, 2.5], [29.5, 2.5], [2.5, 41.22], [29.5, 41.22]], "hole_diameter": 2.0, "pins": {"first": [7.11, 2.5], "count": 8}, "glass": [0.24, 5.0, 31.52, 33.72], "active": [2.14, 6.45, 27.72, 27.72], "window_margin": 0.5},
+  "lcd": {"xy": [27.5, 5], "size": [32, 43.72], "standoff": 2.5, "pcb_thickness": 1.2, "glass_height": 2.3, "face_gap": 0.3, "holes": [[2.5, 2.5], [29.5, 2.5], [2.5, 41.22], [29.5, 41.22]], "hole_diameter": 2.0, "pins": {"first": [7.11, 1.5], "count": 8}, "glass": [0.24, 5.0, 31.52, 33.72], "active": [2.14, 6.45, 27.72, 27.72], "window_margin": 0.5},
   "camera": {"xy": [1.5, 22], "size": 30.5, "standoff": 2.5, "pcb_thickness": 1.6, "lens_height": 3.5, "lens_body": 6.2, "lens": [15.24, 12.65], "face_gap": 0.6, "window_diameter": 12, "holes": [[3.745, 3.73], [26.755, 3.73], [3.745, 21.23], [26.755, 21.23]], "pins": {"first": [3.81, 29.23], "pitch_rows": -2.54, "count": 10}},
-  "pico": {"xy": [53.5, 1.7], "standoff": 2.5, "pcb_thickness": 1.0, "usb_height": 2.9, "usb_overhang": 1.3, "debug_height": 2.9, "bootsel": [10.5, 10.5], "holes": [[4.8, 2], [16.2, 2], [4.8, 49], [16.2, 49]]},
-  "buttons": {"dpad": [14, 25.3], "pitch": 8.5, "reject": [66.2, 25.3], "body_height": 3.5, "switch_height": 7.3, "stem_diameter": 3.5, "free_gap": 0.2},
+  "pico": {"xy": [53.5, 1.7], "standoff": 2.5, "pcb_thickness": 1.0, "usb_height": 2.9, "usb_overhang": 1.3, "debug_height": 2.9, "bootsel": [7.0, 11.7], "holes": [[4.8, 2], [16.2, 2], [4.8, 49], [16.2, 49]]},
+  "buttons": {"dpad": [14, 25.3], "pitch": 8.5, "reject": [66.2, 25.3], "body_height": 3.5, "switch_height": 7.3, "stem_boss": [3.4, 1.3], "stem_top": [2.4, 1.8], "free_gap": 0.2},
   "assumptions": [
     "Rev D (2026-10-30): landscape with a five-switch D-pad left of the LCD and the reject key right of it. Pico 2 H, B0070 and LCD headers are soldered straight into the carrier, so each board sits on its 2.5 mm header plastic. XY values are carrier PCB coordinates viewed from the front (KiCad F side); B-side parts appear mirrored.",
-    "LCD outline, holes, glass and active area come from Akizuki's M154-240240-RGB-8 drawing (portrait, header along the top). The pin row's distance from the top edge (2.5 mm) is read off the drawing and should be measured.",
+    "LCD outline, holes, glass and active area come from Akizuki's M154-240240-RGB-8 drawing (portrait, header along the top). The pin row is 1.5 mm below the top edge.",
     "B0070 outline, holes, lens centre and header come from Akizuki's b0070_dim.pdf. The header is assumed to be on the side opposite the lens with its plastic between the board and the carrier; lens height 3.5 mm is the 3.36 mm module plus adhesive and needs measuring. Its two holes away from the header sit under the D-pad, so printed peg spacers there are clamped by the back case instead of screwed.",
-    "Pico 2 H outline, holes and pin rows follow the Raspberry Pi datasheet. BOOTSEL position, USB height and the debug connector envelope are approximate.",
+    "Pico 2 H outline, holes and pin rows follow the Raspberry Pi datasheet. BOOTSEL (7.0 mm from the pin 1 edge, 11.7 mm from the USB end) is scaled from a top-view photo; USB height and the debug connector envelope are approximate.",
     "Through-hole leads from the LCD, camera, Pico and switches land under neighbouring boards and must be trimmed to 1 mm or less after soldering.",
-    "Switch height 7.3 mm is from the TVDP01-G73BB drawing; body height 3.5 mm is approximate."
+    "Switch body 6.0 x 6.0 x 3.5 mm, total height 7.3 mm and the stem (3.4 mm round boss, 2.4 mm square top 1.8 mm tall) are from the TVDP01-G73BB drawing."
+  ],
+  "checks": [
+    ["LCD", "外形 32.00 × 43.72、厚さ 3.5 max", "M154 図面", "一致"],
+    ["LCD", "取付穴 Ø2.0、端から 2.5（間隔 27.00 / 38.72）", "M154 図面", "一致"],
+    ["LCD", "表示域 27.72 角（左 2.14、上 6.45）、ガラス 31.52 × 33.72（上 5.00）", "M154 図面", "一致"],
+    ["LCD", "1番ピン 左 7.11、上 1.50、ピッチ 2.54", "M154 図面", "修正：上 2.5 → 1.5"],
+    ["カメラ", "基板 30.5 角、取付穴 R1.6（左右 3.745 / 26.755、上 3.73、間隔 17.50）", "B0070 図面", "一致"],
+    ["カメラ", "レンズ中心 左 15.24、上 12.65", "B0070 図面", "一致"],
+    ["カメラ", "2×10 ヘッダ 1番ピン 左 3.81、下 1.27", "B0070 図面", "一致"],
+    ["カメラ", "レンズモジュール 6 角、高さ 3.36 ± 0.2", "OV7675 モジュール図面", "一致：公差内。モデルは上限側の 6.2 角・3.5"],
+    ["カメラ", "基板厚 1.6、ヘッダ樹脂の向き", "記載なし", "要実測"],
+    ["スイッチ", "本体 6.0 角 × 3.5、全高 7.3、足 6.5 × 4.5", "TVDP01-G73BB 図面", "一致"],
+    ["スイッチ", "軸 根元 Ø3.4 × 1.3、先端 2.4 角 × 1.8", "TVDP01-G73BB 図面", "修正：Ø3.5 丸棒 → 実形状。キャップは角穴で先端にはめる"],
+    ["Pico 2 H", "外形 21 × 51 × 1.0、取付穴 Ø2.1（4.8 / 16.2、2 / 49）、ピン列 1.61", "Pico 2 データシート", "一致"],
+    ["Pico 2 H", "BOOTSEL ピン1側から 7.0、USB 端から 11.7", "上面写真から換算", "修正：中央 → ピン1側。要実測"],
+    ["Pico 2 H", "USB・デバッグコネクタ高さ 2.9", "推定", "要実測"]
   ]
 }
