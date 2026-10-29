@@ -46,7 +46,11 @@ PX, PY = pico["xy"][0] + O, pico["xy"][1] + O
 PICO_HOLES = [(PX + x, PY + y) for x, y in pico["holes"]]
 LX, LY = lcd["xy"][0] + O, lcd["xy"][1] + O
 LCD_HOLES = [(LX + x, LY + y) for x, y in lcd["holes"]]
-BUTTONS = [(btn["x"] + O, y + O) for y in btn["ys"]]
+# SW1-SW6 in schematic order: up, down, left, right, select, reject
+(DX, DY), PITCH = btn["dpad"], btn["pitch"]
+BUTTONS = [(DX + O + i * PITCH, DY + O + j * PITCH) for i, j in ((0, -1), (0, 1), (-1, 0), (1, 0), (0, 0))]
+BUTTONS.append((btn["reject"][0] + O, btn["reject"][1] + O))
+KEYS = [("上", "#cae0e1"), ("下", "#cae0e1"), ("左", "#cae0e1"), ("右", "#cae0e1"), ("決定", "#e5ac56"), ("拒否", "#c96f5b")]
 
 
 def disk(x, y, radius):
@@ -190,7 +194,11 @@ def make_parts():
     header = box(CX + size - hx + 1.27, CY + hy + rows - 1.27, CX + size - hx - 2.54 * cam["pins"]["count"] + 1.27, CY + hy + 1.27)
     add("camera_header", "カメラ2×10ヘッダ・キャリアへ直付け", [op(header, CAM_BACK, PCB_Z)], "#252c32", "camera")
     spacer = [op(disk(*SCREWS[0], 2.2), CAM_BACK, PCB_Z), op(disk(*SCREWS[0], screw["clearance"]), CAM_BACK - 0.1, PCB_Z + 0.1, True)]
-    add("camera_spacer", "カメラ上角のスペーサー・はんだ付け前に挟む", spacer, "#83999c", "retainer", True)
+    add("camera_spacer", "カメラ下角のスペーサー・はんだ付け前に挟む", spacer, "#83999c", "retainer", True)
+    # the holes away from the header sit under the D-pad, so a peg locates each spacer and the back case clamps it
+    for i, (x, y) in enumerate(CAM_HOLES[:2], 1):
+        peg = [op(disk(x, y, 2.2), CAM_BACK, PCB_Z), op(disk(x, y, 1.4), CAM_FRONT + 0.2, CAM_BACK)]
+        add(f"camera_peg_{i}", "カメラ上角のスペーサー・ピンを穴へ", peg, "#83999c", "retainer", True)
 
     pico_ops = [op(box(PX, PY, PX + 21, PY + 51), PICO_FACE, PICO_BACK)]
     for x, y in PICO_HOLES:
@@ -244,7 +252,7 @@ def make_parts():
             op(disk(bx, by, 2.5), body_top + 1.3, TOP + 0.8),
             op(disk(bx, by, stem + 0.2), body_top + 0.2, tip + btn["free_gap"], True),
         ]
-        add(f"button_{i + 1}", ["次へボタン", "承認ボタン", "拒否ボタン"][i], cap, ["#cae0e1", "#e5ac56", "#c96f5b"][i], "button", True)
+        add(f"button_{i + 1}", f"{KEYS[i][0]}ボタン", cap, KEYS[i][1], "button", True)
         add(
             f"switch_{i + 1}",
             "TVDP01-G73BB",

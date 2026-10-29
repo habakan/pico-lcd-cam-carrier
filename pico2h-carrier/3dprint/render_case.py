@@ -135,8 +135,8 @@ def export_views(parts, size, out):
         draw.text((60 + 800 * i, 153), label, font=font(25), fill="#203842")
     draw.line((55, 826, 1545, 826), fill="#d5ddd9", width=2)
     for x, title, note in [
-        (60, "液晶 / カメラ", "LCDとカメラはヘッダをキャリアへ直付け。カメラは背面の窓へ"),
-        (820, "Pico / ボタン", "Picoはカメラと並べて基板裏へ直付け。ボタン3個はキャップで操作"),
+        (60, "液晶 / カメラ", "LCDは表、カメラは十字キーの裏。どちらもヘッダを直付け"),
+        (820, "Pico / ボタン", "左に十字キー5個、右に拒否キー。Picoは右端の裏に直付け"),
     ]:
         draw.text((x, 856), title, font=font(25), fill="#203842")
         draw.text((x, 899), note, font=font(19), fill="#52636a")

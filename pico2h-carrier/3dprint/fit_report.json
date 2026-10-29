@@ -1,9 +1,9 @@
 {
   "units": "mm",
   "assumptions": [
-    "Rev D (2026-10-27): Pico 2 H, B0070 and LCD headers are soldered straight into the carrier, so each board sits on its 2.5 mm header plastic. XY values are carrier PCB coordinates viewed from the front (KiCad F side); B-side parts appear mirrored.",
+    "Rev D (2026-10-30): landscape with a five-switch D-pad left of the LCD and the reject key right of it. Pico 2 H, B0070 and LCD headers are soldered straight into the carrier, so each board sits on its 2.5 mm header plastic. XY values are carrier PCB coordinates viewed from the front (KiCad F side); B-side parts appear mirrored.",
     "LCD outline, holes, glass and active area come from Akizuki's M154-240240-RGB-8 drawing (portrait, header along the top). The pin row's distance from the top edge (2.5 mm) is read off the drawing and should be measured.",
-    "B0070 outline, holes, lens centre and header come from Akizuki's b0070_dim.pdf. The header is assumed to be on the side opposite the lens with its plastic between the board and the carrier; lens height 3.5 mm is the 3.36 mm module plus adhesive and needs measuring.",
+    "B0070 outline, holes, lens centre and header come from Akizuki's b0070_dim.pdf. The header is assumed to be on the side opposite the lens with its plastic between the board and the carrier; lens height 3.5 mm is the 3.36 mm module plus adhesive and needs measuring. Its two holes away from the header sit under the D-pad, so printed peg spacers there are clamped by the back case instead of screwed.",
     "Pico 2 H outline, holes and pin rows follow the Raspberry Pi datasheet. BOOTSEL position, USB height and the debug connector envelope are approximate.",
     "Through-hole leads from the LCD, camera, Pico and switches land under neighbouring boards and must be trimmed to 1 mm or less after soldering.",
     "Switch height 7.3 mm is from the TVDP01-G73BB drawing; body height 3.5 mm is approximate."
@@ -12,7 +12,7 @@
     {
       "name": "base",
       "watertight": true,
-      "volume_mm3": 17403.351,
+      "volume_mm3": 21800.151,
       "bounds": [
         [
           0.0,
@@ -20,7 +20,7 @@
           0.0
         ],
         [
-          61.4,
+          81.4,
           59.4,
           18.5
         ]
@@ -34,12 +34,12 @@
       "bounds": [
         [
           4.2,
-          4.2,
+          24.7,
           6.5
         ],
         [
           34.7,
-          34.7,
+          55.2,
           8.1
         ]
       ],
@@ -52,12 +52,12 @@
       "bounds": [
         [
           16.36,
-          13.75,
+          34.25,
           3.15
         ],
         [
           22.56,
-          19.95,
+          40.45,
           6.5
         ]
       ],
@@ -70,12 +70,12 @@
       "bounds": [
         [
           16.96,
-          14.35,
+          34.85,
           3.0
         ],
         [
           21.96,
-          19.35,
+          39.85,
           3.15
         ]
       ],
@@ -88,12 +88,12 @@
       "bounds": [
         [
           6.76,
-          29.62,
+          50.12,
           8.1
         ],
         [
           32.16,
-          34.7,
+          55.2,
           10.6
         ]
       ],
@@ -106,12 +106,48 @@
       "bounds": [
         [
           5.745,
-          5.73,
+          43.73,
           8.1
         ],
         [
           10.145,
-          10.13,
+          48.13,
+          10.6
+        ]
+      ],
+      "printable": true
+    },
+    {
+      "name": "camera_peg_1",
+      "watertight": true,
+      "volume_mm3": 46.501,
+      "bounds": [
+        [
+          28.755,
+          26.23,
+          6.7
+        ],
+        [
+          33.155,
+          30.63,
+          10.6
+        ]
+      ],
+      "printable": true
+    },
+    {
+      "name": "camera_peg_2",
+      "watertight": true,
+      "volume_mm3": 46.501,
+      "bounds": [
+        [
+          5.745,
+          26.23,
+          6.7
+        ],
+        [
+          10.145,
+          30.63,
           10.6
         ]
       ],
@@ -123,12 +159,12 @@
       "volume_mm3": 1057.185,
       "bounds": [
         [
-          36.2,
+          56.2,
           4.4,
           7.1
         ],
         [
-          57.2,
+          77.2,
           55.4,
           8.1
         ]
@@ -141,12 +177,12 @@
       "volume_mm3": 635.0,
       "bounds": [
         [
-          36.56,
+          56.56,
           4.5,
           8.1
         ],
         [
-          56.84,
+          76.84,
           55.3,
           10.6
         ]
@@ -159,12 +195,12 @@
       "volume_mm3": 44.1,
       "bounds": [
         [
-          43.2,
+          63.2,
           26.4,
           6.2
         ],
         [
-          50.2,
+          70.2,
           33.4,
           7.1
         ]
@@ -177,12 +213,12 @@
       "volume_mm3": 18.0,
       "bounds": [
         [
-          45.2,
+          65.2,
           42.9,
           5.6
         ],
         [
-          48.2,
+          68.2,
           46.9,
           7.1
         ]
@@ -195,12 +231,12 @@
       "volume_mm3": 71.7,
       "bounds": [
         [
-          42.7,
+          62.7,
           51.2,
           4.2
         ],
         [
-          50.7,
+          70.7,
           56.7,
           7.1
         ]
@@ -213,12 +249,12 @@
       "volume_mm3": 62.35,
       "bounds": [
         [
-          44.2,
+          64.2,
           4.4,
           4.2
         ],
         [
-          49.2,
+          69.2,
           8.7,
           7.1
         ]
@@ -231,13 +267,13 @@
       "volume_mm3": 1663.811,
       "bounds": [
         [
-          10.7,
-          4.2,
+          30.2,
+          7.7,
           14.7
         ],
         [
-          42.7,
-          47.92,
+          62.2,
+          51.42,
           15.9
         ]
       ],
@@ -249,13 +285,13 @@
       "volume_mm3": 2412.679,
       "bounds": [
         [
-          10.94,
-          9.2,
+          30.44,
+          12.7,
           15.9
         ],
         [
-          42.46,
-          42.92,
+          61.96,
+          46.42,
           18.17
         ]
       ],
@@ -267,13 +303,13 @@
       "volume_mm3": 23.052,
       "bounds": [
         [
-          12.84,
-          10.65,
+          32.34,
+          14.15,
           18.17
         ],
         [
-          40.56,
-          38.37,
+          60.06,
+          41.87,
           18.2
         ]
       ],
@@ -285,13 +321,13 @@
       "volume_mm3": 127.0,
       "bounds": [
         [
-          16.54,
-          5.45,
+          36.04,
+          8.95,
           12.2
         ],
         [
-          36.86,
-          7.95,
+          56.36,
+          11.45,
           14.7
         ]
       ],
@@ -303,13 +339,13 @@
       "volume_mm3": 88.546,
       "bounds": [
         [
-          43.1,
           13.1,
+          15.9,
           16.0
         ],
         [
-          50.3,
           20.3,
+          23.1,
           21.7
         ]
       ],
@@ -321,13 +357,13 @@
       "volume_mm3": 162.456,
       "bounds": [
         [
-          43.7,
           13.7,
+          16.5,
           12.2
         ],
         [
-          49.7,
           19.7,
+          22.5,
           19.5
         ]
       ],
@@ -339,13 +375,13 @@
       "volume_mm3": 88.546,
       "bounds": [
         [
-          43.1,
-          26.1,
+          13.1,
+          32.9,
           16.0
         ],
         [
-          50.3,
-          33.3,
+          20.3,
+          40.1,
           21.7
         ]
       ],
@@ -357,13 +393,13 @@
       "volume_mm3": 162.456,
       "bounds": [
         [
-          43.7,
-          26.7,
+          13.7,
+          33.5,
           12.2
         ],
         [
-          49.7,
-          32.7,
+          19.7,
+          39.5,
           19.5
         ]
       ],
@@ -375,13 +411,13 @@
       "volume_mm3": 88.546,
       "bounds": [
         [
-          43.1,
-          39.1,
+          4.6,
+          24.4,
           16.0
         ],
         [
-          50.3,
-          46.3,
+          11.8,
+          31.6,
           21.7
         ]
       ],
@@ -393,13 +429,121 @@
       "volume_mm3": 162.456,
       "bounds": [
         [
-          43.7,
-          39.7,
+          5.2,
+          25.0,
           12.2
         ],
         [
-          49.7,
-          45.7,
+          11.2,
+          31.0,
+          19.5
+        ]
+      ],
+      "printable": false
+    },
+    {
+      "name": "button_4",
+      "watertight": true,
+      "volume_mm3": 88.546,
+      "bounds": [
+        [
+          21.6,
+          24.4,
+          16.0
+        ],
+        [
+          28.8,
+          31.6,
+          21.7
+        ]
+      ],
+      "printable": true
+    },
+    {
+      "name": "switch_4",
+      "watertight": true,
+      "volume_mm3": 162.456,
+      "bounds": [
+        [
+          22.2,
+          25.0,
+          12.2
+        ],
+        [
+          28.2,
+          31.0,
+          19.5
+        ]
+      ],
+      "printable": false
+    },
+    {
+      "name": "button_5",
+      "watertight": true,
+      "volume_mm3": 88.546,
+      "bounds": [
+        [
+          13.1,
+          24.4,
+          16.0
+        ],
+        [
+          20.3,
+          31.6,
+          21.7
+        ]
+      ],
+      "printable": true
+    },
+    {
+      "name": "switch_5",
+      "watertight": true,
+      "volume_mm3": 162.456,
+      "bounds": [
+        [
+          13.7,
+          25.0,
+          12.2
+        ],
+        [
+          19.7,
+          31.0,
+          19.5
+        ]
+      ],
+      "printable": false
+    },
+    {
+      "name": "button_6",
+      "watertight": true,
+      "volume_mm3": 88.546,
+      "bounds": [
+        [
+          65.3,
+          24.4,
+          16.0
+        ],
+        [
+          72.5,
+          31.6,
+          21.7
+        ]
+      ],
+      "printable": true
+    },
+    {
+      "name": "switch_6",
+      "watertight": true,
+      "volume_mm3": 162.456,
+      "bounds": [
+        [
+          65.9,
+          25.0,
+          12.2
+        ],
+        [
+          71.9,
+          31.0,
           19.5
         ]
       ],
@@ -408,7 +552,7 @@
     {
       "name": "lid",
       "watertight": true,
-      "volume_mm3": 7484.633,
+      "volume_mm3": 10251.158,
       "bounds": [
         [
           0.0,
@@ -416,7 +560,7 @@
           12.2
         ],
         [
-          61.4,
+          81.4,
           59.4,
           20.9
         ]
@@ -426,7 +570,7 @@
     {
       "name": "carrier",
       "watertight": true,
-      "volume_mm3": 4810.941,
+      "volume_mm3": 6538.941,
       "bounds": [
         [
           2.7,
@@ -434,7 +578,7 @@
           10.6
         ],
         [
-          58.7,
+          78.7,
           56.7,
           12.2
         ]
@@ -452,7 +596,7 @@
           0.0
         ],
         [
-          54.3,
+          74.3,
           55.3,
           1.2
         ]
@@ -461,6 +605,6 @@
     }
   ],
   "interferences": [],
-  "checked_pairs": 276,
+  "checked_pairs": 496,
   "scope": "Nominal simplified solid envelopes only. Wiring bends, insertion paths, optical field and physical tolerances need physical confirmation."
 }

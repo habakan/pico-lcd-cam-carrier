@@ -1,7 +1,7 @@
 import re
 from uuid import NAMESPACE_URL, uuid5
 
-from build_case_stl import OUT, OUTLINE, SCREWS, O, P
+from build_case_stl import BUTTONS, KEYS, OUT, OUTLINE, SCREWS, O, P
 
 
 def uid(name):
@@ -35,8 +35,8 @@ def main():
         ("B0070 (BACK, lens to rear)", *cam["xy"], cam["size"], cam["size"]),
         ("Pico 2 H (BACK, USB down)", *pico["xy"], 21, 51),
     ]
-    for i, y in enumerate(P["buttons"]["ys"], 1):
-        items.append((f"SW{i} (FRONT)", P["buttons"]["x"] - 3, y - 3, 6, 6))
+    for i, (x, y) in enumerate(BUTTONS, 1):
+        items.append((f"SW{i} (FRONT)", round(x - O - 3, 3), round(y - O - 3, 3), 6, 6))
     for name, x, y, width, height in items:
         elements.append(
             f'(gr_rect (start {x} {y}) (end {x + width:g} {y + height:g}) (stroke (width 0.12) (type default)) (fill (type none)) (layer "Dwgs.User") (uuid "{uid(name)}"))'
@@ -50,7 +50,7 @@ def main():
           (fp_text reference "MECH_{category.upper()}" (at 0 -5) (layer "F.Fab") hide (effects (font (size 1 1) (thickness 0.15))))
           (model "${{KIPRJMOD}}/3dprint/{category}.wrl" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0))))''')
     elements.append(
-        f'(gr_text "REV D MECHANICAL DRAFT - ELECTRICAL FOOTPRINTS / ROUTING PENDING" (at 28 56) (layer "Dwgs.User") (uuid "{uid("status")}") (effects (font (size 0.9 0.9) (thickness 0.12))))'
+        f'(gr_text "REV D MECHANICAL DRAFT - ELECTRICAL FOOTPRINTS / ROUTING PENDING" (at 38 56) (layer "Dwgs.User") (uuid "{uid("status")}") (effects (font (size 0.9 0.9) (thickness 0.12))))'
     )
     target.write_text(header + "\n".join("  " + e for e in elements) + "\n)\n")
     print(
