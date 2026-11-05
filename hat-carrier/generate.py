@@ -132,18 +132,25 @@ def library():
 
 # Front-view carrier coordinates in mm (KiCad F side); B-side parts appear mirrored
 BOARD = (86, 34)
-HAT_XY, HAT_SIZE = (10.5, 0.9), (65, 30.2)
-HAT_HOLES = [(3.5, 3.5), (61.5, 3.5), (3.5, 26.5)]  # the fourth corner sits over the camera socket
+HAT_XY, HAT_SIZE = (10.5, 0.5), (65, 30.2)
+# Waveshare's drawing: holes 58 x 23.2 apart, 3.5 from the edges. The top right one sits over the camera socket
+HAT_HOLES = [(3.5, 3.5), (3.5, 26.7), (61.5, 26.7)]
+# With the stick on the left the socket runs along the bottom edge, pin 1 at the right end of the inner row
+HAT_HEADER = (32.5, 26.7)
 PICO_XY, CAMERA_XY = (0.75, 12.25), (54.75, 1.75)
 MECH = [
-    ("HAT (FRONT, on J3 + M2.5x11 standoffs)", HAT_XY, HAT_SIZE),
+    ("HAT (FRONT, on J3 + M2.5x10 standoffs)", HAT_XY, HAT_SIZE),
+    # Scaled from the drawing's render, so about 0.3 mm either way
+    ("HAT LCD glass", (HAT_XY[0] + 17.7, HAT_XY[1] + 1.85), (29.5, 26.5)),
+    ("HAT joystick", (HAT_XY[0] + 6.12 - 3.5, HAT_XY[1] + 15.18 - 3.5), (7, 7)),
+    *((f"HAT KEY{i + 1}", (HAT_XY[0] + 57.1 - 3, HAT_XY[1] + y - 1.75), (6, 3.5)) for i, y in enumerate((9.23, 15.17, 21.11))),
     ("Pico 2 H (BACK, components to rear, USB left)", PICO_XY, (51, 21)),
-    ("B0070 (BACK, lens to rear)", CAMERA_XY, (30.5, 30.5)),
-    # Pin rows, from the Pi Zero header position and the Pico/B0070 drawings
-    ("J3 pin 1 lower left", (HAT_XY[0] + 32.5 - 9.5 * 2.54 - 1.27, HAT_XY[1] + 3.5 - 2.54), (50.8, 5.08)),
+    ("B0070 (BACK, lens to rear, header up)", CAMERA_XY, (30.5, 30.5)),
+    ("J3 pin 1 upper right", (HAT_XY[0] + HAT_HEADER[0] - 9.5 * 2.54 - 1.27, HAT_XY[1] + HAT_HEADER[1] - 2.54), (50.8, 5.08)),
     ("J1 pin 1 left (USB end)", (PICO_XY[0] + 1.37 - 1.27, PICO_XY[1] + 1.61 - 1.27), (50.8, 2.54)),
     ("J2 pin 1 left (VBUS)", (PICO_XY[0] + 1.37 - 1.27, PICO_XY[1] + 19.39 - 1.27), (50.8, 2.54)),
-    ("J4 pin 1 lower right", (CAMERA_XY[0] + 30.5 - 3.81 - 9 * 2.54 - 1.27, CAMERA_XY[1] + 26.69 - 1.27), (25.4, 5.08)),
+    # Turned 180 degrees from Rev D so its socket clears J3; the OV7675's MVFP register turns the image back
+    ("J4 pin 1 upper left", (CAMERA_XY[0] + 3.81 - 1.27, CAMERA_XY[1] + 1.27 - 1.27), (25.4, 5.08)),
 ]
 
 
