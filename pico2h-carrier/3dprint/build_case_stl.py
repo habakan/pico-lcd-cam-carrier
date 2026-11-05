@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import shapely as sh
 import trimesh
+from shapely.affinity import scale
 from shapely.geometry import Point, Polygon, box
 from shapely.ops import polygonize
 
@@ -334,6 +335,8 @@ def main():
     }
     scene = trimesh.Scene()
     for part in parts:
+        # KiCad's y runs down; flip it so the STL is right-handed and not the mirror image of the boards
+        part["ops"] = [(a, scale(p, 1, -1, origin=(0, D / 2)), lo, hi) for a, p, lo, hi in part["ops"]]
         part["layers"] = slices(part["ops"])
         mesh = mesh_slices(part["layers"])
         part["mesh"] = mesh
@@ -401,8 +404,12 @@ def main():
         raise ValueError(report["interferences"])
     (OUT / "pico2h_case.scad").write_text(scad_source(parts))
     scene.export(OUT / "assembly.glb")
-    export_formats(parts, OUT, (O, O, PCB_TOP))
-    export_views(parts, (W, D, TOP), OUT)
+    # the VRML, previews and viewer draw y downwards like KiCad, so they get the flip undone
+    flip = np.diag([1.0, -1.0, 1.0, 1.0])
+    flip[1, 3] = D
+    shown = [{**p, "mesh": p["mesh"].copy().apply_transform(flip)} for p in parts]
+    export_formats(shown, OUT, (O, O, PCB_TOP))
+    export_views(shown, (W, D, TOP), OUT)
     print(
         f"PASS: {checked} nominal body pairs, closed printable meshes and STL roundtrips"
     )
