@@ -1,0 +1,1 @@
+(sym_lib_table (lib (name "HatCarrier") (type "KiCad") (uri "${KIPRJMOD}/HatCarrier.kicad_sym") (options "") (descr "HAT carrier symbols")))
