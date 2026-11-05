@@ -138,6 +138,11 @@ HAT_HOLES = [(3.5, 3.5), (3.5, 26.7), (61.5, 26.7)]
 # With the stick on the left the socket runs along the bottom edge, pin 1 at the right end of the inner row
 HAT_HEADER = (32.5, 26.7)
 PICO_XY, CAMERA_XY = (0.75, 12.25), (54.75, 1.75)
+# Pico holes from the datasheet; B0070 holes from its drawing, turned 180 degrees like the camera
+PICO_HOLES = [(PICO_XY[0] + x, PICO_XY[1] + y) for x in (2, 49) for y in (4.8, 16.2)]
+CAMERA_HOLES = [(CAMERA_XY[0] + x, CAMERA_XY[1] + 30.5 - y) for x in (3.745, 26.755) for y in (3.73, 21.23)]
+# The case screws pass through the Pico and camera holes that lie outside the HAT
+CASE_SCREWS = PICO_HOLES[:2] + CAMERA_HOLES[2:]
 MECH = [
     ("HAT (FRONT, on J3 + M2.5x10 standoffs)", HAT_XY, HAT_SIZE),
     # Scaled from the drawing's render, so about 0.3 mm either way
@@ -173,6 +178,12 @@ def pcb():
                 "    (attr board_only exclude_from_pos_files exclude_from_bom)",
                 f'    (property "Reference" "H{i + 1}" (at 0 -2.8 0) (layer "F.SilkS") (uuid "{uid("hole-ref", i)}") (effects (font (size 1 1) (thickness 0.15))))',
                 f'    (pad "" np_thru_hole circle (at 0 0) (size 2.7 2.7) (drill 2.7) (layers "*.Cu" "*.Mask")))']
+    for i, (x, y) in enumerate(CASE_SCREWS):
+        x, y = round(x, 3), round(y, 3)
+        out += [f'  (footprint "MountingHole:MountingHole_2.2mm_M2" (layer "F.Cu") (uuid "{uid("screw", i)}") (at {x} {y})',
+                "    (attr board_only exclude_from_pos_files exclude_from_bom)",
+                f'    (property "Reference" "H{len(HAT_HOLES) + i + 1}" (at 0 -2.6 0) (layer "F.SilkS") (uuid "{uid("screw-ref", i)}") (effects (font (size 1 1) (thickness 0.15))))',
+                f'    (pad "" np_thru_hole circle (at 0 0) (size 2.2 2.2) (drill 2.2) (layers "*.Cu" "*.Mask")))']
     for i, (label, (x, y), (sw, sh)) in enumerate(MECH):
         out.append(f'  (gr_rect (start {x:.2f} {y:.2f}) (end {x + sw:.2f} {y + sh:.2f}) (stroke (width 0.12) (type default)) '
                    f'(fill none) (layer "Dwgs.User") (uuid "{uid("mech", i)}"))')
