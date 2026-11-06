@@ -20,14 +20,13 @@ GPIO の割り当ては `src/board_pins.h` と同じなので、ファームは�
 | J2 | Pico 2 H 右列、USB側から物理ピン40–21 | B | 1x20 2.54 mm ピンソケット |
 | J3 | 1.3inch LCD HAT（Raspberry Pi 40ピン番号） | F | 2x20 2.54 mm ピンヘッダ（オス） |
 | J4 | OV7675 / Arducam B0070 | B | 2x10 2.54 mm ピンソケット |
-| J5 | Debug Probe UART RX/GND | F | 1x2 パッド。部品は載せない |
 
 HAT 側の接続は Waveshare の回路図（`1.3inch-LCD-HAT-Schematic.pdf`）で確認しました。
 
 | J3 ピン | HAT の信号 | ネット | Pico |
 |---|---|---|---|
 | 1, 17 | 3.3V | 3V3 | 物理36 |
-| 13 | LCD RST | 3V3（起動時は SWRESET） | - |
+| 13 | LCD RST | LCD_RES（起動時にファームがリセットする。seedsigner-pico と同じ） | GP0 |
 | 18 | LCD BL | 3V3（HAT 上でも 10k でプルアップ済み） | - |
 | 24 | LCD CS | GND（SPI mode 3） | - |
 | 6, 9, 14, 20, 25, 30, 34, 39 | GND | GND | - |
@@ -111,5 +110,5 @@ PCB 座標（前面から見た KiCad 座標、mm）。B 面部品は前面か�
 KiCad 10.0.7 の `kicad-cli` で確かめました。
 
 - 回路図の ERC はエラー0件。警告はフットプリントライブラリが CLI の環境に未登録という5件だけ。
-- 書き出したネットリストで、各ネットのピンが上の表と `board_pins.h` に一致する。3V3 は7ピン、GND は19ピン、信号はどれも2ピン。
+- 書き出したネットリストで、各ネットのピンが上の表と `board_pins.h` に一致する。3V3 は6ピン、GND は18ピン、LCD_RES を含む信号はどれも2ピン。
 - PCB は読み込めて、DRC の指摘は固定穴のライブラリ未登録の警告（穴ごとに1件）だけ。電気フットプリントは未配置なので、配線の検査はまだ。

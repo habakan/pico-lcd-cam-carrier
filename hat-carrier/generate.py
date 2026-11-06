@@ -9,17 +9,17 @@ ROOT = str(uuid.uuid5(NS, "root"))
 FONT = "(effects (font (size 1.27 1.27)))"
 
 # Pico 2 H physical pins 1-20, then 40-21 from the USB end; None is left unconnected
-PICO_LEFT = ["UART_TX", "BTN_C", "GND", "CAM_D0", "CAM_D1", "CAM_D2", "CAM_D3", "GND", "CAM_D4", "CAM_D5",
+PICO_LEFT = ["LCD_RES", "BTN_C", "GND", "CAM_D0", "CAM_D1", "CAM_D2", "CAM_D3", "GND", "CAM_D4", "CAM_D5",
              "CAM_D6", "CAM_D7", "GND", "CAM_PCLK", "CAM_HREF", "CAM_VSYNC", "BTN_UP", "GND", "CAM_SDA", "CAM_SCL"]
 PICO_RIGHT = [None, None, "GND", None, "3V3", None, "BTN_B", None, "BTN_REJECT", "BTN_SELECT",
               None, "BTN_RIGHT", "GND", "CAM_XCLK", "BTN_LEFT", "LCD_MOSI", "LCD_SCK", "GND", "BTN_DOWN", "LCD_DC"]
 PICO_RIGHT_NAMES = ["VBUS", "VSYS", "GND", "3V3_EN", "3V3_OUT", "ADC_VREF", "GP28", "AGND", "GP27", "GP26",
                     "RUN", "GP22", "GND", "GP21", "GP20", "GP19", "GP18", "GND", "GP17", "GP16"]
-# The HAT's 40-pin socket, named after Waveshare's schematic. RST and BL are tied high and CS low, as on
-# the breadboard; 5V (pins 2 and 4) stays unconnected because the HAT runs from 3.3V
+# The HAT's 40-pin socket, named after Waveshare's schematic. RST goes to GP0 as in seedsigner-pico, BL is tied
+# high and CS low; 5V (pins 2 and 4) stays unconnected because the HAT runs from 3.3V
 HAT = {1: ("3V3", "3V3"), 2: ("5V", None), 3: ("BCM2", None), 4: ("5V", None), 5: ("BCM3", None),
        6: ("GND", "GND"), 7: ("BCM4", None), 8: ("BCM14", None), 9: ("GND", "GND"), 10: ("BCM15", None),
-       11: ("BCM17", None), 12: ("BCM18", None), 13: ("LCD_RST", "3V3"), 14: ("GND", "GND"),
+       11: ("BCM17", None), 12: ("BCM18", None), 13: ("LCD_RST", "LCD_RES"), 14: ("GND", "GND"),
        15: ("BCM22", None), 16: ("BCM23", None), 17: ("3V3", "3V3"), 18: ("LCD_BL", "3V3"),
        19: ("LCD_DIN", "LCD_MOSI"), 20: ("GND", "GND"), 21: ("BCM9", None), 22: ("LCD_DC", "LCD_DC"),
        23: ("LCD_CLK", "LCD_SCK"), 24: ("LCD_CS", "GND"), 25: ("GND", "GND"), 26: ("BCM7", None),
@@ -64,7 +64,7 @@ def symbol(name, desc, fp_filter, names, two_columns, lib=""):
 
 SYMBOLS = [
     ("PicoLeft", "Pico 2 H header row, physical pins 1 to 20", "*1x20*",
-     [f"GP{n}" if n else "GND" for n in (0, 1, None, 2, 3, 4, 5, None, 6, 7, 8, 9, None, 10, 11, 12, 13, None, 14, 15)],
+     [f"GP{n}" if n is not None else "GND" for n in (0, 1, None, 2, 3, 4, 5, None, 6, 7, 8, 9, None, 10, 11, 12, 13, None, 14, 15)],
      False, PICO_LEFT),
     ("PicoRight", "Pico 2 H header row, physical pins 40 to 21 from the USB end", "*1x20*",
      PICO_RIGHT_NAMES, False, PICO_RIGHT),
@@ -72,7 +72,6 @@ SYMBOLS = [
      [HAT[n][0] for n in range(1, 41)], True, [HAT[n][1] for n in range(1, 41)]),
     ("Camera_B0070", "Arducam B0070 2x10 header; odd pins are the lower row seen from the lens", "*2x10*",
      CAMERA_NAMES, True, CAMERA),
-    ("UART_Debug", "Debug Probe UART pads", "*1x02*", ["UART_TX", "GND"], False, ["UART_TX", "GND"]),
 ]
 # ref, symbol, value, footprint, schematic position, dnp
 PARTS = [
@@ -80,7 +79,6 @@ PARTS = [
     ("J2", "PicoRight", "Pico 2 H right row (pins 40-21)", "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical", (190.5, 96.52), False),
     ("J3", "LCD_HAT_1in3", "Waveshare 1.3inch LCD HAT", "Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical", (299.72, 104.14), False),
     ("J4", "Camera_B0070", "OV7675 / Arducam B0070", "Connector_PinSocket_2.54mm:PinSocket_2x10_P2.54mm_Vertical", (109.22, 205.74), False),
-    ("J5", "UART_Debug", "UART to Debug Probe", "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical", (299.72, 205.74), True),
 ]
 
 
