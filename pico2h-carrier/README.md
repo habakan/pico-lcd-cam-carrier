@@ -20,9 +20,8 @@
 | J4 | OV7675 / Arducam B0070 | B | 2x10 2.54 mm スルーホール（カメラのヘッダを直付け） |
 | SW1–SW5 | 十字キー：上 (GP13)、下 (GP17)、左 (GP20)、右 (GP22)、決定 (GP26) | F | 6 mm THT タクトスイッチ |
 | SW6 | 拒否 (GP27) | F | 6 mm THT タクトスイッチ |
-| J5 | Debug Probe UART RX/GND | F | 1x2 2.54 mm パッド。部品は載せない |
 
-LCDのJ3 pin 1はGND、カメラJ4は奇数ピンがレンズ面から見て下列です。Pico右列J2 pin 1はUSB側のVBUS位置です。
+LCD の RES（J3 pin 5）は GP0 につなぎ、起動時にファームがリセットします（seedsigner-pico と同じ。ログは SWD 越しの RTT）。LCDのJ3 pin 1はGND、カメラJ4は奇数ピンがレンズ面から見て下列です。Pico右列J2 pin 1はUSB側のVBUS位置です。
 
 ## 配置
 
