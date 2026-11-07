@@ -78,7 +78,7 @@ PARTS = [
     ("J1", "PicoLeft", "Pico 2 H left row (pins 1-20)", "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical", (101.6, 96.52), False),
     ("J2", "PicoRight", "Pico 2 H right row (pins 40-21)", "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical", (190.5, 96.52), False),
     ("J3", "LCD_HAT_1in3", "Waveshare 1.3inch LCD HAT", "Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical", (299.72, 104.14), False),
-    ("J4", "Camera_B0070", "OV7675 / Arducam B0070", "Connector_PinSocket_2.54mm:PinSocket_2x10_P2.54mm_Vertical", (109.22, 205.74), False),
+    ("J4", "Camera_B0070", "OV7675 / Arducam B0070", "Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical", (109.22, 205.74), False),
 ]
 
 
@@ -174,20 +174,20 @@ def pcb():
         x, y = round(HAT_XY[0] + x, 2), round(HAT_XY[1] + y, 2)
         out += [f'  (footprint "MountingHole:MountingHole_2.7mm_M2.5" (layer "F.Cu") (uuid "{uid("hole", i)}") (at {x} {y})',
                 "    (attr board_only exclude_from_pos_files exclude_from_bom)",
-                f'    (property "Reference" "H{i + 1}" (at 0 -2.8 0) (layer "F.SilkS") (uuid "{uid("hole-ref", i)}") (effects (font (size 1 1) (thickness 0.15))))',
+                f'    (property "Reference" "H{i + 1}" (at 0 -2.8 0) (layer "F.SilkS") (hide yes) (uuid "{uid("hole-ref", i)}") (effects (font (size 1 1) (thickness 0.15))))',
                 f'    (pad "" np_thru_hole circle (at 0 0) (size 2.7 2.7) (drill 2.7) (layers "*.Cu" "*.Mask")))']
     for i, (x, y) in enumerate(CASE_SCREWS):
         x, y = round(x, 3), round(y, 3)
         out += [f'  (footprint "MountingHole:MountingHole_2.2mm_M2" (layer "F.Cu") (uuid "{uid("screw", i)}") (at {x} {y})',
                 "    (attr board_only exclude_from_pos_files exclude_from_bom)",
-                f'    (property "Reference" "H{len(HAT_HOLES) + i + 1}" (at 0 -2.6 0) (layer "F.SilkS") (uuid "{uid("screw-ref", i)}") (effects (font (size 1 1) (thickness 0.15))))',
+                f'    (property "Reference" "H{len(HAT_HOLES) + i + 1}" (at 0 -2.6 0) (layer "F.SilkS") (hide yes) (uuid "{uid("screw-ref", i)}") (effects (font (size 1 1) (thickness 0.15))))',
                 f'    (pad "" np_thru_hole circle (at 0 0) (size 2.2 2.2) (drill 2.2) (layers "*.Cu" "*.Mask")))']
     for i, (label, (x, y), (sw, sh)) in enumerate(MECH):
         out.append(f'  (gr_rect (start {x:.2f} {y:.2f}) (end {x + sw:.2f} {y + sh:.2f}) (stroke (width 0.12) (type default)) '
                    f'(fill none) (layer "Dwgs.User") (uuid "{uid("mech", i)}"))')
         out.append(f'  (gr_text "{label}" (at {x + sw / 2:.2f} {y - 0.6:.2f} 0) (layer "Dwgs.User") (uuid "{uid("mech-t", i)}") '
                    f'(effects (font (size 0.8 0.8) (thickness 0.12))))')
-    out.append(f'  (gr_text "REV E MECHANICAL DRAFT - ELECTRICAL FOOTPRINTS / ROUTING PENDING" (at {w / 2} {h + 2.5} 0) '
+    out.append(f'  (gr_text "REV E DRAFT - FOOTPRINTS AND TRACKS COME FROM route.py" (at {w / 2} {h + 2.5} 0) '
                f'(layer "Dwgs.User") (uuid "{uid("draft")}") (effects (font (size 0.9 0.9) (thickness 0.12))))')
     out.append(")")
     return "\n".join(out) + "\n"

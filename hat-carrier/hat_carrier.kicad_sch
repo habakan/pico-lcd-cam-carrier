@@ -496,7 +496,7 @@
     (in_bom yes) (on_board yes) (dnp no) (uuid "0331a579-0be1-5531-99bb-a4c81528d650")
     (property "Reference" "J4" (at 117.22 188.31 0) (effects (font (size 1.27 1.27)) (justify left)))
     (property "Value" "OV7675 / Arducam B0070" (at 117.22 190.85 0) (effects (font (size 1.27 1.27)) (justify left)))
-    (property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_2x10_P2.54mm_Vertical" (at 109.22 205.74 0) (effects (font (size 1.27 1.27)) hide))
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical" (at 109.22 205.74 0) (effects (font (size 1.27 1.27)) hide))
     (property "Datasheet" "~" (at 109.22 205.74 0) (effects (font (size 1.27 1.27)) hide))
     (pin "1" (uuid "79308895-a0ff-5ee8-bb5f-5ed43f3df6f6"))
     (pin "2" (uuid "de083199-6243-5571-85cd-81e1837f0f3c"))
