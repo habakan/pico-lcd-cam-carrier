@@ -16,7 +16,7 @@ from build_case_stl import mesh_slices, op, overlap, rounded, slices  # noqa: E4
 from render_case import render  # noqa: E402
 
 BW, BD = layout.BOARD
-WALL, CLEARANCE, FACE = 2.4, 0.3, 2.4
+WALL, CLEARANCE = 2.4, 0.3
 O = WALL + CLEARANCE
 W, D = BW + 2 * O, BD + 2 * O
 
@@ -29,20 +29,33 @@ PCB_TOP = PCB_Z + 1.6
 PICO_BACK = PCB_Z - 8.5 - 2.5
 PICO_FACE = PICO_BACK - 1.0
 USB_H = 2.9
-# The HAT's 7.5 mm socket and 2.0 mm LCD are read from SeedSigner's Orange Pill case (10 mm spacers, 1.95 mm pocket)
+# The HAT's 7.5 mm socket is read from SeedSigner's Orange Pill case (10 mm spacers)
 HAT_BOTTOM = PCB_TOP + 2.5 + 7.5
 HAT_TOP = HAT_BOTTOM + 1.6
-LCD_TOP = HAT_TOP + 2.0
-H = LCD_TOP + 0.3
-TOP = H + FACE
-# Orange Pill's key caps imply switches 1.5 mm tall; the stick height is a guess until measured
-KEY_TOP = HAT_TOP + 1.5
-STICK_BODY, KNOB_TIP = HAT_TOP + 1.2, HAT_TOP + 3.0
+H = HAT_TOP
+
+
+def opz(u):
+    """Height of a plane of Orange Pill's OP_Upper.stl, whose HAT face is at u = 1.5 and outer face at u = -2.5."""
+    return HAT_TOP + 1.5 - u
+
 
 hx, hy = layout.HAT_XY
-STICK = (hx + 6.12, hy + 15.18)
-KEYS = [(hx + 57.1, hy + y) for y in (9.23, 15.17, 21.11)]
-ACTIVE = (hx + 31.3, hy + 15.1)
+
+
+def opxy(x, y):
+    """A point of OP_Upper.stl in carrier coordinates; its origin is the HAT's centre and seen from the front y runs down."""
+    return hx + 32.5 + x, hy + 15.1 + y
+
+
+# The front copies OP_Upper so Orange Pill's caps fit unchanged: the cover rests on the HAT and pockets clear its parts
+TOP = opz(-2.5)
+LCD_TOP = opz(-0.2)
+KEY_TOP = opz(-1.5)  # where a cap's flange sits when pushed up to the cover
+STICK = opxy(-25.34, 0.35)
+STICK_BODY, KNOB_TIP, CAP_BOTTOM = HAT_TOP + 1.2, HAT_TOP + 3.4, HAT_TOP + 1.2
+KEYS = [opxy(24.5, y) for y in (-5.9, 0, 5.9)]
+ACTIVE = opxy(-1.25, 0.25)
 HAT_HOLES = [(hx + x, hy + y) for x, y in layout.HAT_HOLES]
 HAT_CORNER = (hx + 61.5, hy + 3.5)
 px, py = layout.PICO_XY
@@ -89,29 +102,43 @@ def make_parts():
     lip = rounded(O, O, W - O, D - O, 2).difference(rounded(O + 1.2, O + 1.2, W - O - 1.2, D - O - 1.2, 1))
     for x, y in layout.CASE_SCREWS:
         lip = lip.difference(kdisk(x, y, 3))
+    # The cover now rests on the HAT, whose top edge is 0.5 mm from the carrier's
+    lip = lip.difference(kbox(hx - 0.3, hy - 0.3, hx + 65.3, hy + 30.5))
     lid.append(op(lip, H - 1.8, H))
     for x, y in layout.CASE_SCREWS:
         lid += [op(kdisk(x, y, 2.3), PCB_TOP, H), op(kdisk(x, y, 0.8), PCB_TOP - 0.1, TOP - 0.8, True)]
+    def opbox(x, y, w, h):
+        cx, cy = opxy(x, y)
+        return kbox(cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2)
+
+    # Pockets and holes measured from OP_Upper; the 45 degree chamfers are cut in 0.25 mm steps
+    lid += [op(opbox(0.5, 0.25, 32.5, 28.5), H - 1, LCD_TOP, True), op(opbox(-1.25, 0.25, 24, 24.5), H - 1, opz(-1), True),
+            op(kdisk(*STICK, 7), H - 1, opz(-1), True),
+            op(opbox(25.08, 0, 14.5, 28.5), H - 1, opz(-0.5), True), op(opbox(24.5, 0, 14.5, 19), H - 1, opz(-1.9), True)]
+    for k in range(6):
+        z0, z1 = opz(-1) + 0.25 * k, opz(-1) + 0.25 * (k + 1)
+        lid += [op(opbox(-1.25, 0.25, 24 + 2 * (z1 - opz(-1)), 24.5 + 2 * (z1 - opz(-1))), z0, TOP + 1 if k == 5 else z1, True),
+                op(kdisk(*STICK, 6.75 - (z1 - opz(-1))), z0, TOP + 1 if k == 5 else z1, True)]
+    lid += [op(kbox(x - 4.25, y - 2.6, x + 4.25, y + 2.6), H - 1, TOP + 1, True) for x, y in KEYS]
+    # Screw heads on the HAT's left holes; the right ones and the post sit in the key pocket
+    lid += [op(kdisk(x, y, 2.5), H - 1, opz(-0.5), True) for x, y in HAT_HOLES[:2]]
     # The HAT corner without a carrier hole is held by a post, its peg in the HAT's hole
-    lid += [op(kdisk(*HAT_CORNER, 2.25), HAT_TOP, H), op(kdisk(*HAT_CORNER, 1.1), HAT_BOTTOM + 0.2, HAT_TOP)]
-    lid.append(op(kbox(ACTIVE[0] - 12.2, ACTIVE[1] - 12.2, ACTIVE[0] + 12.2, ACTIVE[1] + 12.2), H - 1, TOP + 1, True))
-    lid.append(op(kdisk(*STICK, 5.25), H - 1, TOP + 1, True))
-    for x, y in KEYS:
-        lid.append(op(kbox(x - 4.05, y - 2.1, x + 4.05, y + 2.1), H - 1, TOP + 1, True))
+    lid += [op(kdisk(*HAT_CORNER, 2.25), HAT_TOP, opz(-0.5)), op(kdisk(*HAT_CORNER, 1.1), HAT_BOTTOM + 0.2, HAT_TOP)]
     add("lid", "前カバー", lid, "#e4e6dc", "lid", True)
 
-    # Caps: a flange under the cover keeps each one in; the stick cap's recess fits over the knob
-    cap_bottom = KNOB_TIP - 1.5
+    # Orange Pill's joystick.stl and button.stl, printed from seedsigner/; modelled here only to check the fit
     stick_cap = [
-        op(kdisk(*STICK, 6), cap_bottom, cap_bottom + 0.6),
-        op(kdisk(*STICK, 4), cap_bottom + 0.6, TOP + 2),
-        op(kbox(STICK[0] - 2, STICK[1] - 2, STICK[0] + 2, STICK[1] + 2), cap_bottom - 0.1, KNOB_TIP + 0.1, True),
+        op(kdisk(*STICK, 6.4), CAP_BOTTOM, CAP_BOTTOM + 1),
+        op(kdisk(*STICK, 4.5), CAP_BOTTOM + 1, CAP_BOTTOM + 5),
+        op(kdisk(*STICK, 4.97), CAP_BOTTOM + 5, CAP_BOTTOM + 10),
+        op(kbox(STICK[0] - 1.12, STICK[1] - 1.12, STICK[0] + 1.12, STICK[1] + 1.12), CAP_BOTTOM - 0.1, CAP_BOTTOM + 2.4, True),
+        op(kdisk(*STICK, 2.25), CAP_BOTTOM - 0.1, CAP_BOTTOM + 0.5, True),
     ]
-    add("stick_cap", "スティックのキャップ", stick_cap, "#e5ac56", "button", True)
+    add("stick_cap", "スティックのキャップ（Orange Pill）", stick_cap, "#e5ac56", "button")
     for i, (x, y) in enumerate(KEYS, 1):
-        key = [op(kbox(x - 5.25, y - 2.3, x + 5.25, y + 2.3), KEY_TOP, KEY_TOP + 0.6),
-               op(kbox(x - 3.75, y - 1.8, x + 3.75, y + 1.8), KEY_TOP + 0.6, TOP + 1)]
-        add(f"key_{i}", f"KEY{i} のキャップ", key, "#c96f5b" if i == 1 else "#cae0e1", "button", i == 1)
+        key = [op(kbox(x - 5.85, y - 2.15, x + 5.85, y + 2.15), KEY_TOP, KEY_TOP + 0.4),
+               op(kbox(x - 4, y - 2.35, x + 4, y + 2.35), KEY_TOP + 0.4, KEY_TOP + 4.8)]
+        add(f"key_{i}", f"KEY{i} のキャップ（Orange Pill）", key, "#c96f5b" if i == 1 else "#cae0e1", "button")
 
     carrier = [op(Polygon([(x + O, D - y - O) for x, y in
                            [(1, 0), (BW - 1, 0), (BW, 1), (BW, BD - 1), (BW - 1, BD), (1, BD), (0, BD - 1), (0, 1)]]), PCB_Z, PCB_TOP)]
@@ -129,8 +156,8 @@ def make_parts():
     add("hat_socket", "HAT のソケット", [op(kbox(*J3), PCB_TOP + 2.5, HAT_BOTTOM)], "#252c32", "lcd")
     add("lcd_glass", "LCD ガラス", [op(kbox(hx + 17.7, hy + 1.85, hx + 47.2, hy + 28.35), HAT_TOP, LCD_TOP - 0.03)], "#131d27", "lcd")
     add("lcd_active", "表示域 23.4 mm 角", [op(kbox(ACTIVE[0] - 11.7, ACTIVE[1] - 11.7, ACTIVE[0] + 11.7, ACTIVE[1] + 11.7), LCD_TOP - 0.03, LCD_TOP)], "#91c7ce", "lcd")
-    add("stick", "ジョイスティック・高さは仮", [op(kbox(STICK[0] - 3.5, STICK[1] - 3.5, STICK[0] + 3.5, STICK[1] + 3.5), HAT_TOP, STICK_BODY),
-                                       op(kdisk(*STICK, 1.75), STICK_BODY, KNOB_TIP)], "#aeb8bb", "lcd")
+    add("stick", "ジョイスティック・高さは Orange Pill から推定", [op(kbox(STICK[0] - 3.5, STICK[1] - 3.5, STICK[0] + 3.5, STICK[1] + 3.5), HAT_TOP, STICK_BODY),
+                                       op(kbox(STICK[0] - 1, STICK[1] - 1, STICK[0] + 1, STICK[1] + 1), STICK_BODY, KNOB_TIP)], "#aeb8bb", "lcd")
     add("switches", "KEY1-3", [op(kbox(x - 3, y - 1.75, x + 3, y + 1.75), HAT_TOP, KEY_TOP) for x, y in KEYS], "#f1eade", "lcd")
 
     pico = [op(kbox(px, py, px + 51, py + 21), PICO_FACE, PICO_BACK)]
@@ -166,11 +193,11 @@ def main():
             if len(mesh.split(only_watertight=False)) != 1:
                 raise ValueError(f"Disconnected printable: {part['name']}")
             printed = mesh.copy()
-            # the cover prints face down; the caps print flange down
+            # the cover prints face down
             if part["name"] == "lid":
                 printed.apply_transform(trimesh.transformations.rotation_matrix(np.pi, [1, 0, 0]))
             printed.apply_translation(-printed.bounds[0])
-            name = {"base": "back", "lid": "front", "stick_cap": "stick", "key_1": "key"}[part["name"]]
+            name = {"base": "back", "lid": "front"}[part["name"]]
             printed.export(OUT / f"hat_case_{name}.stl")
             if not trimesh.load_mesh(OUT / f"hat_case_{name}.stl").is_watertight:
                 raise ValueError(f"STL roundtrip failed: {name}")

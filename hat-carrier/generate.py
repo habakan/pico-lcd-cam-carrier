@@ -145,7 +145,8 @@ MECH = [
     ("HAT (FRONT, on J3 + M2.5x10 standoffs)", HAT_XY, HAT_SIZE),
     # Scaled from the drawing's render, so about 0.3 mm either way
     ("HAT LCD glass", (HAT_XY[0] + 17.7, HAT_XY[1] + 1.85), (29.5, 26.5)),
-    ("HAT joystick", (HAT_XY[0] + 6.12 - 3.5, HAT_XY[1] + 15.18 - 3.5), (7, 7)),
+    # Orange Pill's stick hole; the drawing reads (6.1, 15.2), but the case uses Orange Pill's caps
+    ("HAT joystick", (HAT_XY[0] + 7.16 - 3.5, HAT_XY[1] + 15.45 - 3.5), (7, 7)),
     *((f"HAT KEY{i + 1}", (HAT_XY[0] + 57.1 - 3, HAT_XY[1] + y - 1.75), (6, 3.5)) for i, y in enumerate((9.23, 15.17, 21.11))),
     ("Pico 2 H (BACK, components to rear, USB left)", PICO_XY, (51, 21)),
     ("B0070 (BACK, lens to rear, header up)", CAMERA_XY, (30.5, 30.5)),
