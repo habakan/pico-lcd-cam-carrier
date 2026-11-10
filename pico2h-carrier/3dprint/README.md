@@ -61,8 +61,8 @@ Python 3.11の仮想環境で、リポジトリ直下から実行します。
 
 ```sh
 uv venv -p 3.11 /tmp/pico-case-venv
-VIRTUAL_ENV=/tmp/pico-case-venv uv pip install -r hardware/kicad/pico2h-carrier/3dprint/requirements.txt
-/tmp/pico-case-venv/bin/python hardware/kicad/pico2h-carrier/3dprint/build_case_stl.py
+VIRTUAL_ENV=/tmp/pico-case-venv uv pip install -r pico2h-carrier/3dprint/requirements.txt
+/tmp/pico-case-venv/bin/python pico2h-carrier/3dprint/build_case_stl.py
 ```
 
 STL、3MF、OpenSCAD、GLB、KiCad参照用VRML、画像、HTML、検査レポートを出力します。STL・3MF・OpenSCAD・GLB は KiCad の y（下向き）を反転した右手系で出力するので、前から見た配置が実物と一致します（9bef5e1 までの STL は上下の鏡像でした）。画像・HTML・VRML は従来どおり KiCad の向きで描きます。KiCadの機械配置を更新するときだけ `update_mechanical_layout.py` も実行します。電気フットプリントや配線があるPCBへの上書きは拒否します。

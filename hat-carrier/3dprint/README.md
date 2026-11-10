@@ -72,8 +72,8 @@ Rev D と同じく PLA・0.4 mm ノズル・積層 0.20 mm・壁4周・インフ
 リポジトリ直下から、Rev D と同じパッケージで実行します。
 
 ```sh
-uv run --no-project --with-requirements hardware/kicad/pico2h-carrier/3dprint/requirements.txt \
-  python hardware/kicad/hat-carrier/3dprint/build_case.py
+uv run --no-project --with-requirements pico2h-carrier/3dprint/requirements.txt \
+  python hat-carrier/3dprint/build_case.py
 ```
 
 配置は `../generate.py` の値を、形状を作る関数と画像の描画は Rev D の `build_case_stl.py` と `render_case.py` を読み込んで使います。STL は KiCad の y（下向き）を反転して右手系で出力するので、前から見た配置が実物と一致します。
