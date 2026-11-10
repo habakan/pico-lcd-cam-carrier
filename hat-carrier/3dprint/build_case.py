@@ -2,8 +2,10 @@
 
 import json
 import sys
+import xml.etree.ElementTree as ET
 from itertools import combinations
 from pathlib import Path
+from zipfile import ZIP_DEFLATED, ZipFile
 
 import numpy as np
 import trimesh
@@ -179,6 +181,43 @@ def make_parts():
     return parts
 
 
+def write_plates():
+    """Bambu Studio plates: one 3MF per print, objects laid side by side on the bed."""
+    stick = trimesh.load_mesh(OUT / "seedsigner" / "joystick.stl")
+    # Orange Pill's stick cap is drawn dome down; it prints on its wide skirt
+    stick.apply_transform(trimesh.transformations.rotation_matrix(np.pi, [1, 0, 0]))
+    button = trimesh.load_mesh(OUT / "seedsigner" / "button.stl")
+    plates = {"01_back": [("back", trimesh.load_mesh(OUT / "hat_case_back.stl"))],
+              "02_front": [("front", trimesh.load_mesh(OUT / "hat_case_front.stl"))],
+              "03_caps": [(f"key_{i}", button) for i in (1, 2, 3)] + [(f"stick_{i}", stick) for i in (1, 2)]}
+    for plate, items in plates.items():
+        model = ET.Element("model", unit="millimeter", xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02")
+        resources, build = ET.SubElement(model, "resources"), ET.SubElement(model, "build")
+        x = 10.0
+        for i, (name, mesh) in enumerate(items, 1):
+            placed = mesh.copy()
+            placed.apply_translation([x, 10, 0] - placed.bounds[0])
+            x += placed.extents[0] + 6
+            surface = ET.SubElement(ET.SubElement(resources, "object", id=str(i), type="model", name=name), "mesh")
+            vertices, triangles = ET.SubElement(surface, "vertices"), ET.SubElement(surface, "triangles")
+            for v in placed.vertices:
+                ET.SubElement(vertices, "vertex", x=f"{v[0]:.4f}", y=f"{v[1]:.4f}", z=f"{v[2]:.4f}")
+            for f in placed.faces:
+                ET.SubElement(triangles, "triangle", v1=str(f[0]), v2=str(f[1]), v3=str(f[2]))
+            ET.SubElement(build, "item", objectid=str(i))
+        path = OUT / f"bambu_plate_{plate}.3mf"
+        with ZipFile(path, "w", ZIP_DEFLATED) as archive:
+            archive.writestr("[Content_Types].xml", '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+                             '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+                             '<Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/></Types>')
+            archive.writestr("_rels/.rels", '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                             '<Relationship Target="/3D/3dmodel.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>')
+            archive.writestr("3D/3dmodel.model", ET.tostring(model, encoding="utf-8", xml_declaration=True))
+        with ZipFile(path) as archive:
+            if len(ET.fromstring(archive.read("3D/3dmodel.model")).findall(".//{*}object")) != len(items):
+                raise ValueError(f"3MF roundtrip failed: {plate}")
+
+
 def main():
     parts = make_parts()
     report = {"units": "mm", "outline": [round(W, 2), round(D, 2), round(TOP, 2)], "parts": [], "interferences": []}
@@ -201,6 +240,7 @@ def main():
             printed.export(OUT / f"hat_case_{name}.stl")
             if not trimesh.load_mesh(OUT / f"hat_case_{name}.stl").is_watertight:
                 raise ValueError(f"STL roundtrip failed: {name}")
+    write_plates()
     pairs = list(combinations(parts, 2))
     for a, b in pairs:
         volume = overlap(a["layers"], b["layers"])

@@ -8,6 +8,16 @@
 
 ## 印刷するもの
 
+Bambu Studio では、プレートごとにまとめた 3MF を開いてスライスします。中身は下の STL と同じで、向きも印刷用に揃えてあります。
+
+| 3MF | 中身 |
+|---|---|
+| [bambu_plate_01_back.3mf](bambu_plate_01_back.3mf) | 背面ケース |
+| [bambu_plate_02_front.3mf](bambu_plate_02_front.3mf) | 前カバー |
+| [bambu_plate_03_caps.3mf](bambu_plate_03_caps.3mf) | キーのキャップ3個、スティックのキャップ2個（軸の穴がきつかったときの予備）。積層 0.08〜0.12 mm |
+
+3MF は形状だけで、印刷設定は含みません。microSD で渡すときは、スライスしたあと「プレートのスライスファイルをエクスポート」で `.gcode.3mf` を書き出します。
+
 | ファイル | 数 | 向き |
 |---|---:|---|
 | [hat_case_back.stl](hat_case_back.stl) | 1 | 背面がベッド。左の壁の USB 開口の上辺はブリッジになる |
@@ -70,6 +80,6 @@ uv run --no-project --with-requirements hardware/kicad/pico2h-carrier/3dprint/re
 
 ## 確認結果
 
-- 全25部品が閉じたメッシュで、印刷する2部品はそれぞれ1つの立体。STL を読み込み直して確認。キャップは Orange Pill の形を寸法どおりに置いて干渉を見ている。
+- 全25部品が閉じたメッシュで、印刷する2部品はそれぞれ1つの立体。STL を読み込み直し、3MF は部品の数を読み直して確認。キャップは Orange Pill の形を寸法どおりに置いて干渉を見ている。
 - 公称寸法で300組の体積干渉を計算し、重なりは0件。[fit_report.json](fit_report.json)
 - スライス・実機印刷は未実施。
