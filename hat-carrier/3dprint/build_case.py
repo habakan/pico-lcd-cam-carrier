@@ -12,6 +12,7 @@ import trimesh
 from shapely.geometry import Point, Polygon, box
 
 OUT = Path(__file__).resolve().parent
+DOCS = OUT.parents[1] / "docs"
 sys.path[:0] = [str(OUT.parent), str(OUT.parents[1] / "pico2h-carrier" / "3dprint")]
 import generate as layout  # noqa: E402
 from build_case_stl import mesh_slices, op, overlap, rounded, slices  # noqa: E402
@@ -254,6 +255,10 @@ def main():
     shown = [{**p, "mesh": p["mesh"].copy().apply_transform(flip)} for p in parts]
     for mode, file in (("assembled", "preview.png"), ("inside", "inside.png"), ("exploded", "exploded.png")):
         render(shown, 1400, 900, mode).save(OUT / file)
+    bare = [p for p in shown if p["group"] not in ("base", "lid", "button")]
+    turn = trimesh.transformations.rotation_matrix(np.pi, [0, 1, 0], [W / 2, D / 2, H / 2])
+    render(bare, 1400, 900, "assembled").save(DOCS / "assembled_front.png")
+    render([{**p, "mesh": p["mesh"].copy().apply_transform(turn)} for p in bare], 1400, 900, "assembled").save(DOCS / "assembled_back.png")
     if report["interferences"]:
         raise ValueError(report["interferences"])
     print(f"PASS: {W:.1f} x {D:.1f} x {TOP:.1f} mm, {len(pairs)} pairs without overlap")
