@@ -1,6 +1,6 @@
 # Pico 2 H carrier (KiCad draft, Rev D)
 
-ブレッドボードの配線（`docs/hardware.md`、`src/board_pins.h`）を、Pico 2 H・LCD・OV7675 を直接はんだ付けするキャリア基板へ移すための KiCad 下書きです。
+bitwasm-signer-pico のブレッドボード配線（`docs/hardware.md`、`src/board_pins.h`）を、Pico 2 H・LCD・OV7675 を直接はんだ付けするキャリア基板へ移すための KiCad 下書きです。
 
 ## ファイル
 

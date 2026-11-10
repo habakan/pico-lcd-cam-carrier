@@ -2,7 +2,7 @@
 
 Waveshare 1.3inch LCD HAT、Pico 2 H、OV7675（Arducam B0070）を**はんだ付けせずに差すだけ**で組むためのキャリア基板の下書きです。コネクタ4つを実装済みで発注し、組む人は3枚の基板を差してねじを締めるだけにします。はんだ付けで組む [Rev D](../pico2h-carrier/README.md) とは別系統です。
 
-GPIO の割り当ては `src/board_pins.h` と同じなので、ファームはそのまま動きます。
+GPIO の割り当ては bitwasm-signer-pico の `src/board_pins.h` と同じです（[README](../README.md) の表）。
 
 ## ファイル
 

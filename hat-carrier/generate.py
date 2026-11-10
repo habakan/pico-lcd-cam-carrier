@@ -86,10 +86,10 @@ def schematic():
     lib = {s[0]: s for s in SYMBOLS}
     out = ['(kicad_sch (version 20250114) (generator "eeschema") (generator_version "9.0")',
            f'  (uuid "{ROOT}")', '  (paper "A3")',
-           '  (title_block (title "bitwasm-signer HAT carrier") (date "2026-11-05") (rev "E"))', "  (lib_symbols"]
+           '  (title_block (title "pico-lcd-cam-carrier HAT") (date "2026-11-05") (rev "E"))', "  (lib_symbols"]
     out += [symbol(n, d, f, names, two, "HatCarrier:") for n, d, f, names, two, _ in SYMBOLS]
     out.append("  )")
-    out.append(f'  (text "bitwasm-signer HAT carrier | connector-level schematic draft" (at 210 25 0) '
+    out.append(f'  (text "pico-lcd-cam-carrier HAT | connector-level schematic draft" (at 210 25 0) '
                f'(effects (font (size 2.54 2.54))) (uuid "{uid("title")}"))')
     out.append(f'  (text "Every board plugs in: Pico 2 H and B0070 into sockets on the back, the HAT onto J3 on the front. '
                f'Only J3 is a male header." (at 210 31 0) {FONT} (uuid "{uid("note")}"))')

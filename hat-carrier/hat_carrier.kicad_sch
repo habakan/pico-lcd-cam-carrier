@@ -1,7 +1,7 @@
 (kicad_sch (version 20250114) (generator "eeschema") (generator_version "9.0")
   (uuid "b8a99152-fe7e-57c0-9200-ad3ce5a3098a")
   (paper "A3")
-  (title_block (title "bitwasm-signer HAT carrier") (date "2026-11-05") (rev "E"))
+  (title_block (title "pico-lcd-cam-carrier HAT") (date "2026-11-05") (rev "E"))
   (lib_symbols
 (symbol "HatCarrier:PicoLeft" (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
   (property "Reference" "J" (at 0 0 0) (effects (font (size 1.27 1.27))))
@@ -248,7 +248,7 @@
   )
 )
   )
-  (text "bitwasm-signer HAT carrier | connector-level schematic draft" (at 210 25 0) (effects (font (size 2.54 2.54))) (uuid "f200e22c-130a-58fa-95c0-8e984d8bcab6"))
+  (text "pico-lcd-cam-carrier HAT | connector-level schematic draft" (at 210 25 0) (effects (font (size 2.54 2.54))) (uuid "f200e22c-130a-58fa-95c0-8e984d8bcab6"))
   (text "Every board plugs in: Pico 2 H and B0070 into sockets on the back, the HAT onto J3 on the front. Only J3 is a male header." (at 210 31 0) (effects (font (size 1.27 1.27))) (uuid "07b613fb-e5df-5a20-baa1-b12b48a0ec38"))
   (symbol (lib_id "HatCarrier:PicoLeft") (at 101.6 96.52 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (uuid "02288eeb-3fbc-5bdb-b5f0-43a2a3f25dc1")
