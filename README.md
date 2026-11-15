@@ -61,3 +61,7 @@ Buttons pull to GND when pressed, against the RP2350's internal pull-ups.
 Split, with its history, from `hardware/kicad/` in
 [bitwasm-signer-pico](https://github.com/bitwasm-project/bitwasm-signer-pico). The case's front cover and caps
 come from SeedSigner's Orange Pill (MIT, `hat-carrier/3dprint/seedsigner/LICENSE.md`).
+
+## License
+
+MIT ([LICENSE](LICENSE)). The Orange Pill parts in `hat-carrier/3dprint/seedsigner/` keep SeedSigner's MIT license.
