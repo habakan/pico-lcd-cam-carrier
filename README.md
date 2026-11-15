@@ -1,59 +1,63 @@
 # pico-lcd-cam-carrier
 
-Raspberry Pi Pico 2 H に、Waveshare 1.3inch LCD HAT（240x240 ST7789、ジョイスティックとキー3つ）と OV7675 カメラ（Arducam B0070）をまとめて載せるキャリア基板と、そのケースの KiCad・3D プリント用データです。
+A carrier board and case for building [SeedSigner on the Raspberry Pi Pico 2](https://github.com/habakan/seedsigner-pico)
+without soldering. A Raspberry Pi Pico 2 H, a Waveshare 1.3inch LCD HAT (240x240 ST7789, a joystick and three
+keys) and an OV7675 camera (Arducam B0070) plug into it. KiCad files, the scripts that generate them, and 3D
+print files for the case.
 
-| ディレクトリ | 版 | 組み方 |
+> [!WARNING]
+> **Rev E is ordered but not yet tested.** The pin map is the one the firmware uses on a breadboard today, and
+> the board passes ERC and DRC, but no assembled Rev E has run yet.
+
+[日本語の README](README.ja.md) · [BOM with prices](BOM.md)
+
+| Directory | Revision | How it goes together |
 |---|---|---|
-| [hat-carrier/](hat-carrier/README.md) | Rev E | HAT・Pico・カメラをソケットに差す。発注済み、未検証 |
-| [pico2h-carrier/](pico2h-carrier/README.md) | Rev D | LCD・Pico・カメラを直接はんだ付けする下書き |
+| [hat-carrier/](hat-carrier/README.md) | Rev E | Everything plugs into sockets; no soldering. Ordered, untested |
+| [pico2h-carrier/](pico2h-carrier/README.md) | Rev D | A draft where the LCD, the Pico and the camera are soldered on |
 
-## Rev E の見た目
+The directory READMEs are in Japanese for now.
 
-### キャリア基板
+## Rev E
 
-![キャリア基板を斜めから見た KiCad の3Dレンダリング](docs/carrier_iso.png)
+![KiCad 3D render of the carrier board](docs/carrier_iso.png)
 
-| 表面（HAT 側） | 裏面（Pico・カメラ側） |
+| Front (HAT side) | Back (Pico and camera side) |
 |---|---|
-| ![表面](docs/carrier_top.png) | ![裏面](docs/carrier_bottom.png) |
+| ![front](docs/carrier_top.png) | ![back](docs/carrier_bottom.png) |
 
-表面には HAT を受ける 2x20 オスヘッダ J3、裏面には Pico 用の 1x20 ソケット J1・J2 とカメラ用の 2x10 ソケット J4 をはんだ付けします。
+The front takes the HAT on a 2x20 male header (J3). The back has two 1x20 sockets for the Pico (J1, J2) and a
+2x10 socket for the camera (J4).
 
-### 組み立てた状態（ケースなし）
-
-| 前面 | 背面 |
+| Front | Back |
 |---|---|
-| ![HAT を載せた前面](docs/assembled_front.png) | ![Pico 2 H とカメラを差した背面](docs/assembled_back.png) |
+| ![assembled front with the HAT](docs/assembled_front.png) | ![assembled back with the Pico 2 H and the camera](docs/assembled_back.png) |
 
-前面に 1.3inch LCD HAT、背面に Pico 2 H と OV7675 を差します。部品は寸法だけを合わせた箱のモデルです。
+The parts in these renders are boxes of the right size, not the real models.
 
-画像の作り直し方:
+The case's front cover follows SeedSigner's [Orange Pill](https://github.com/SeedSigner/seedsigner/tree/dev/enclosures/orange_pill)
+(MIT), so its joystick and key caps fit. About 91 x 39 x 36 mm.
 
-```sh
-K=~/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli
-$K pcb render -o docs/carrier_iso.png --side top --rotate "-40,0,-20" --perspective --quality high -w 1400 -h 880 hat-carrier/hat_carrier.kicad_pcb
-for s in top bottom; do $K pcb render -o docs/carrier_$s.png --side $s --quality high -w 1400 -h 600 --zoom 2.1 hat-carrier/hat_carrier.kicad_pcb; done
-# assembled_*.png は hat-carrier/3dprint/build_case.py が書き出す
-```
+## Pin map
 
-## ピンの割り当て
+This table is the contract with the firmware. Change the firmware's pin definitions with it.
 
-ファームとの約束事はこの表です。変えるときはファーム側のピン定義も合わせて直します。
-
-| 機能 | Pico GPIO |
+| Function | Pico GPIO |
 |---|---|
-| カメラ D0–D7 | GP2–GP9（PIO で連続して読むので並びを崩さない） |
-| カメラ PCLK / HREF / VSYNC | GP10 / GP11 / GP12 |
-| カメラ SIOD / SIOC（I2C1） | GP14 / GP15 |
-| カメラ XCLK（GPOUT0） | GP21 |
-| LCD DC / SCK / MOSI（SPI0） | GP16 / GP18 / GP19 |
+| Camera D0-D7 | GP2-GP9 (PIO reads them as one run, so keep the order) |
+| Camera PCLK / HREF / VSYNC | GP10 / GP11 / GP12 |
+| Camera SIOD / SIOC (I2C1) | GP14 / GP15 |
+| Camera XCLK (GPOUT0) | GP21 |
+| LCD DC / SCK / MOSI (SPI0) | GP16 / GP18 / GP19 |
 | LCD RST | GP0 |
-| LCD CS | GND に固定（SPI mode 3） |
-| ジョイスティック 上 / 下 / 左 / 右 / 押し込み | GP13 / GP17 / GP20 / GP22 / GP26 |
-| キー A / B / C | GP27 / GP28 / GP1 |
+| LCD CS | tied to GND (SPI mode 3) |
+| Joystick up / down / left / right / press | GP13 / GP17 / GP20 / GP22 / GP26 |
+| Keys A / B / C | GP27 / GP28 / GP1 |
 
-ボタンは押すと GND に落ちる作りで、プルアップは RP2350 の内部プルアップを使います。
+Buttons pull to GND when pressed, against the RP2350's internal pull-ups.
 
-## 出どころ
+## Origin
 
-[bitwasm-signer-pico](https://github.com/bitwasm-project/bitwasm-signer-pico) の `hardware/kicad/` から履歴ごと切り出しました。ケースの前面とキャップは SeedSigner の [Orange Pill](https://github.com/SeedSigner/seedsigner/tree/dev/enclosures/orange_pill)（MIT）を元にしています（`hat-carrier/3dprint/seedsigner/LICENSE.md`）。
+Split, with its history, from `hardware/kicad/` in
+[bitwasm-signer-pico](https://github.com/bitwasm-project/bitwasm-signer-pico). The case's front cover and caps
+come from SeedSigner's Orange Pill (MIT, `hat-carrier/3dprint/seedsigner/LICENSE.md`).
