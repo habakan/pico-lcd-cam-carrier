@@ -5,15 +5,16 @@ without soldering. A Raspberry Pi Pico 2 H, a Waveshare 1.3inch LCD HAT (240x240
 keys) and an OV7675 camera (Arducam B0070) plug into it. KiCad files, the scripts that generate them, and 3D
 print files for the case.
 
-> [!WARNING]
-> **Rev E is ordered but not yet tested.** The pin map is the one the firmware uses on a breadboard today, and
-> the board passes ERC and DRC, but no assembled Rev E has run yet.
+> [!NOTE]
+> **Rev E is tested on an assembled board, except the LCD.** The camera, all eight buttons and the firmware's
+> self-test work, and no pins are shorted. The screen itself is not checked yet: the LCD on that board is broken,
+> though its backlight lights.
 
 [日本語の README](README.ja.md) · [BOM with prices](BOM.md)
 
 | Directory | Revision | How it goes together |
 |---|---|---|
-| [hat-carrier/](hat-carrier/README.md) | Rev E | Everything plugs into sockets; no soldering. Ordered, untested |
+| [hat-carrier/](hat-carrier/README.md) | Rev E | Everything plugs into sockets; no soldering. Tested except the LCD |
 | [pico2h-carrier/](pico2h-carrier/README.md) | Rev D | A draft where the LCD, the Pico and the camera are soldered on |
 
 The directory READMEs are in Japanese for now.

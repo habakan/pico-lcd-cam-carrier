@@ -6,7 +6,7 @@ Raspberry Pi Pico 2 H に、Waveshare 1.3inch LCD HAT（240x240 ST7789、ジョ�
 
 | ディレクトリ | 版 | 組み方 |
 |---|---|---|
-| [hat-carrier/](hat-carrier/README.md) | Rev E | HAT・Pico・カメラをソケットに差す。発注済み、未検証 |
+| [hat-carrier/](hat-carrier/README.md) | Rev E | HAT・Pico・カメラをソケットに差す。液晶以外は動作確認済み |
 | [pico2h-carrier/](pico2h-carrier/README.md) | Rev D | LCD・Pico・カメラを直接はんだ付けする下書き |
 
 ## Rev E の見た目
