@@ -6,15 +6,16 @@ keys) and an OV7675 camera (Arducam B0070) plug into it. KiCad files, the script
 print files for the case.
 
 > [!NOTE]
-> **Rev E is tested on an assembled board, except the LCD.** The camera, all eight buttons and the firmware's
-> self-test work, and no pins are shorted. The screen itself is not checked yet: the LCD on that board is broken,
-> though its backlight lights.
+> **Rev E is tested on an assembled board.** The screen, the camera, all eight buttons and the firmware's
+> self-test work with [seedsigner-pico](https://github.com/habakan/seedsigner-pico)'s `main`. When soldering
+> the connectors yourself, check every pin of the HAT's header (J3): one dry joint there left the screen blank
+> while its backlight still lit.
 
 [日本語の README](README.ja.md) · [BOM with prices](BOM.md)
 
 | Directory | Revision | How it goes together |
 |---|---|---|
-| [hat-carrier/](hat-carrier/README.md) | Rev E | Everything plugs into sockets; no soldering. Tested except the LCD |
+| [hat-carrier/](hat-carrier/README.md) | Rev E | Everything plugs into sockets; no soldering. Tested |
 | [pico2h-carrier/](pico2h-carrier/README.md) | Rev D | A draft where the LCD, the Pico and the camera are soldered on |
 
 The directory READMEs are in Japanese for now.
