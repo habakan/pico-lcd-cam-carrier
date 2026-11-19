@@ -1,124 +1,124 @@
 # HAT carrier (KiCad draft, Rev E)
 
-Waveshare 1.3inch LCD HAT、Pico 2 H、OV7675（Arducam B0070）を**はんだ付けせずに差すだけ**で組むためのキャリア基板の下書きです。コネクタ4つを実装済みで発注し、組む人は3枚の基板を差してねじを締めるだけにします。はんだ付けで組む [Rev D](../pico2h-carrier/README.md) とは別系統です。
+A draft carrier board for building a Waveshare 1.3inch LCD HAT, a Pico 2 H and an OV7675 (Arducam B0070) **by plugging them in, without soldering**. The board is ordered with its four connectors already fitted, so the builder only plugs in three boards and tightens the screws. It is a separate line from [Rev D](../pico2h-carrier/README.md), which is assembled by soldering.
 
-GPIO の割り当ては bitwasm-signer-pico の `src/board_pins.h` と同じです（[README](../README.md) の表）。
+The GPIO assignment matches `src/board_pins.h` in bitwasm-signer-pico (the table in the [README](../README.md)).
 
-## ファイル
+## Files
 
-- `generate.py`: 下の4ファイルを書き出す。配線や配置を変えるときはこれを直して `python3 generate.py` を実行する。
-- `route.py`: `generate.py` の後に KiCad 同梱の Python で実行する。J1–J4 を置いてネットを割り当て、2層で自動配線し、両面に GND ベタを敷く。
+- `generate.py`: writes the four files below. To change the wiring or the placement, edit it and run `python3 generate.py`.
+- `route.py`: run after `generate.py` with the Python bundled with KiCad. It places J1–J4, assigns the nets, autoroutes on two layers and pours GND on both sides.
   `~/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 route.py`
-- `hat_carrier.kicad_sch`: コネクタ単位の回路図。
-- `HatCarrier.kicad_sym` / `sym-lib-table`: この設計用のシンボル。
-- `hat_carrier.kicad_pcb`: 86 x 34 mm・四隅1 mm面取りの外形、HAT 用の M2.5 穴3つとケース用の M2 穴4つ、部品とピン列の機械領域（Dwgs.User）、J1–J4 と配線。手で直さず、2つのスクリプトから作り直す。
-- `3dprint/`: ケースの生成スクリプトと印刷データ。[3dprint/README.md](3dprint/README.md)
+- `hat_carrier.kicad_sch`: schematic at the connector level.
+- `HatCarrier.kicad_sym` / `sym-lib-table`: symbols for this design.
+- `hat_carrier.kicad_pcb`: 86 x 34 mm outline with 1 mm chamfers at the corners, three M2.5 holes for the HAT and four M2 holes for the case, mechanical areas for the parts and pin rows (Dwgs.User), J1–J4 and the tracks. Do not edit it by hand; regenerate it from the two scripts.
+- `3dprint/`: case generation script and print files. [3dprint/README.md](3dprint/README.md)
 
-## コネクタ
+## Connectors
 
-| Ref | 対象 | 面 | フットプリント |
+| Ref | For | Side | Footprint |
 |---|---|---|---|
-| J1 | Pico 2 H 左列、物理ピン1–20 | B | 1x20 2.54 mm ピンソケット |
-| J2 | Pico 2 H 右列、USB側から物理ピン40–21 | B | 1x20 2.54 mm ピンソケット |
-| J3 | 1.3inch LCD HAT（Raspberry Pi 40ピン番号） | F | 2x20 2.54 mm ピンヘッダ（オス） |
-| J4 | OV7675 / Arducam B0070 | B | 2x10 2.54 mm ピンソケット（パッドの番号はピンヘッダのフットプリントを使う） |
+| J1 | Pico 2 H left row, physical pins 1–20 | B | 1x20 2.54 mm pin socket |
+| J2 | Pico 2 H right row, physical pins 40–21 from the USB end | B | 1x20 2.54 mm pin socket |
+| J3 | 1.3inch LCD HAT (Raspberry Pi 40-pin numbering) | F | 2x20 2.54 mm pin header (male) |
+| J4 | OV7675 / Arducam B0070 | B | 2x10 2.54 mm pin socket (pad numbers use the pin header footprint) |
 
-J4 の位置のピン番号は、前面から見て KiCad のソケットの番号の振り方と左右逆になるので、同じパッド配置のピンヘッダのフットプリントで番号を合わせています。実物のカメラで確かめ済みです（2026-11-07）。ピン側から見てヘッダを上にすると、上の列（基板の縁側）の左端が1番ピン。
+At J4's position, seen from the front, the pin numbers are mirrored left to right against how KiCad numbers its socket, so the numbering is matched by using the pin header footprint with the same pad layout. Checked with the real camera (2026-11-07). Seen from the pin side with the header at the top, pin 1 is the left end of the top row (the board-edge side).
 
-HAT 側の接続は Waveshare の回路図（`1.3inch-LCD-HAT-Schematic.pdf`）で確認しました。
+The HAT-side connections were checked against Waveshare's schematic (`1.3inch-LCD-HAT-Schematic.pdf`).
 
-| J3 ピン | HAT の信号 | ネット | Pico |
+| J3 pin | HAT signal | Net | Pico |
 |---|---|---|---|
-| 1, 17 | 3.3V | 3V3 | 物理36 |
-| 13 | LCD RST | LCD_RES（起動時にファームがリセットする。seedsigner-pico と同じ） | GP0 |
-| 18 | LCD BL | 3V3（HAT 上でも 10k でプルアップ済み） | - |
-| 24 | LCD CS | GND（SPI mode 3） | - |
+| 1, 17 | 3.3V | 3V3 | physical 36 |
+| 13 | LCD RST | LCD_RES (the firmware resets it at boot, as in seedsigner-pico) | GP0 |
+| 18 | LCD BL | 3V3 (also pulled up with 10k on the HAT) | - |
+| 24 | LCD CS | GND (SPI mode 3) | - |
 | 6, 9, 14, 20, 25, 30, 34, 39 | GND | GND | - |
 | 23 / 19 / 22 | LCD CLK / DIN / DC | LCD_SCK / LCD_MOSI / LCD_DC | GP18 / GP19 / GP16 |
-| 31 / 35 / 29 / 37 / 33 | 上 / 下 / 左 / 右 / 押し込み | BTN_UP / DOWN / LEFT / RIGHT / SELECT | GP13 / GP17 / GP20 / GP22 / GP26 |
+| 31 / 35 / 29 / 37 / 33 | up / down / left / right / press | BTN_UP / DOWN / LEFT / RIGHT / SELECT | GP13 / GP17 / GP20 / GP22 / GP26 |
 | 40 / 38 / 36 | KEY1 / KEY2 / KEY3 | BTN_REJECT / BTN_B / BTN_C | GP27 / GP28 / GP1 |
-| 2, 4 | 5V | **未接続** | - |
+| 2, 4 | 5V | **not connected** | - |
 
-カメラの接続は Rev D と同じで、PEN を 3V3、PDN を GND に固定します。ボタンは押すと GND に落ちる作りで、プルアップは RP2350 の内部プルアップを使います。
+The camera is connected as in Rev D, with PEN tied to 3V3 and PDN tied to GND. Buttons pull to GND when pressed, and use the RP2350's internal pull-ups.
 
-## 配置
+## Placement
 
-PCB 座標（前面から見た KiCad 座標、mm）。B 面部品は前面から見て左右反転して置きます。
+PCB coordinates (KiCad coordinates seen from the front, mm). B-side parts are placed mirrored left to right as seen from the front.
 
-| 部品 | 面 | 位置 | 向き |
+| Part | Side | Position | Orientation |
 |---|---|---|---|
-| HAT | F | (10.5, 0.5)–(75.5, 30.7) | 左にジョイスティック、中央に LCD、右に KEY1–3。ソケットは下辺 |
-| J3 | F | 中心 (43, 27.2) | 1番ピンは右端の上（内側）の列 (67.13, 25.93) |
-| Pico 2 H | B | (0.75, 12.25)–(51.75, 33.25) | 部品面は背面へ、USB は左辺 |
-| J1 / J2 | B | 行 y = 13.86 / 31.64、x = 2.12–50.38 | どちらも1番ピンが USB 側（左） |
-| B0070 | B | (54.75, 1.75)–(85.25, 32.25) | レンズは背面へ、中心 (69.99, 19.60)。ヘッダが上辺（Rev D と上下逆） |
-| J4 | B | 行 y = 3.02（奇数）/ 5.56（偶数）、x = 58.56–81.42 | 1番ピンが左端 |
-| H1–H3 | - | (14, 4.0)、(14, 27.2)、(72, 27.2) | HAT の取付穴と同軸。M2.5 x 10 mm のメス-メススペーサーで HAT を支える（SeedSigner の Orange Pill と同じ） |
-| H4–H7 | - | (2.75, 17.05)、(2.75, 28.45)、(81.505, 28.52)、(81.505, 11.02) | Pico とカメラの取付穴と同軸。ケースの M2 ねじが通る |
+| HAT | F | (10.5, 0.5)–(75.5, 30.7) | Joystick on the left, LCD in the center, KEY1–3 on the right. Socket on the bottom edge |
+| J3 | F | center (43, 27.2) | Pin 1 is at the right end of the top (inner) row (67.13, 25.93) |
+| Pico 2 H | B | (0.75, 12.25)–(51.75, 33.25) | Component side faces the back, USB on the left edge |
+| J1 / J2 | B | rows y = 13.86 / 31.64, x = 2.12–50.38 | Both have pin 1 at the USB end (left) |
+| B0070 | B | (54.75, 1.75)–(85.25, 32.25) | Lens faces the back, center (69.99, 19.60). Header on the top edge (upside down from Rev D) |
+| J4 | B | rows y = 3.02 (odd) / 5.56 (even), x = 58.56–81.42 | Pin 1 at the left end |
+| H1–H3 | - | (14, 4.0), (14, 27.2), (72, 27.2) | Coaxial with the HAT's mounting holes. M2.5 x 10 mm female-female spacers support the HAT (as in SeedSigner's Orange Pill) |
+| H4–H7 | - | (2.75, 17.05), (2.75, 28.45), (81.505, 28.52), (81.505, 11.02) | Coaxial with the mounting holes of the Pico and the camera. The case's M2 screws pass through them |
 
-- HAT の右上の取付穴 (72, 4.0) は、背面のカメラ用ソケットとねじ頭が重なるので、キャリアには穴を開けません。その角は前カバーの柱で押さえます。
-- カメラを Rev D と上下逆にしたのは、ヘッダを下辺にすると J4 が J3 と重なるためです。映像は OV7675 の MVFP レジスタ（0x1E）で180°回せます。今のファームはこのレジスタを設定していないので、組んだあとでプレビューの向きを見て決めます。
-- H1–H3 のねじ頭（Ø4.5）は Pico とカメラの下に入ります。どちらもソケットとヘッダ樹脂の分（11 mm）浮くので当たりませんが、Pico・カメラを差す前に締めます。H2 のねじ頭と J2 のソケットの隙間は 0.9 mm、J3 と J2 のピンの間隔は 3.3 mm です。
-- Pico の SWD コネクタは右端でカメラと 3 mm しか離れていません。SWD を使うときは、ケースを開けてカメラを抜きます。
+- The HAT's top-right mounting hole (72, 4.0) has no hole in the carrier, because a screw head there would overlap the camera socket on the back. The front cover's post holds that corner.
+- The camera is upside down from Rev D because with the header on the bottom edge, J4 would overlap J3. The image can be rotated 180° with the OV7675's MVFP register (0x1E). The current firmware does not set this register, so decide after assembly by checking the preview orientation.
+- The screw heads of H1–H3 (Ø4.5) sit under the Pico and the camera. Both are raised by the socket and header plastic (11 mm), so they do not touch, but tighten the screws before plugging in the Pico and the camera. The gap between H2's screw head and J2's socket is 0.9 mm, and the spacing between the pins of J3 and J2 is 3.3 mm.
+- The Pico's SWD connector at the right end is only 3 mm from the camera. To use SWD, open the case and unplug the camera.
 
-## 積み重ね（背面から、推定）
+## Stack-up (from the back, estimated)
 
-| z (mm) | 部品 |
+| z (mm) | Part |
 |---|---|
-| 0–2.4 | 背面ケース |
-| 3.0–6.5 | カメラのレンズ（Pico の USB・SWD は 2.9 mm で、これより低い） |
-| 6.5–8.1 | カメラ基板 |
-| 8.1–19.1 | カメラのヘッダ樹脂 2.5 + ソケット 8.5 |
-| 19.1–20.7 | キャリア基板 |
-| 20.7–30.7 | J3 の樹脂 2.5 + HAT のソケット 7.5 |
-| 30.7–32.3 | HAT 基板 |
-| 32.3–34.0 | LCD モジュール（1.7 mm 以下） |
-| 32.3–36.3 | 前カバー（HAT 基板に直接当たり、部品の所だけ凹む） |
+| 0–2.4 | Back case |
+| 3.0–6.5 | Camera lens (the Pico's USB and SWD are 2.9 mm, lower than this) |
+| 6.5–8.1 | Camera board |
+| 8.1–19.1 | Camera header plastic 2.5 + socket 8.5 |
+| 19.1–20.7 | Carrier board |
+| 20.7–30.7 | J3 plastic 2.5 + HAT socket 7.5 |
+| 30.7–32.3 | HAT board |
+| 32.3–34.0 | LCD module (1.7 mm or less) |
+| 32.3–36.3 | Front cover (rests directly on the HAT board, recessed only at the parts) |
 
-ケースの外形は約 **91.4 x 39.4 x 36.3 mm** になる見込みです。J1・J2・J4 を高さ 5 mm 前後の低背ソケットにすれば、約 32.8 mm まで薄くなります。厚さの大半は2段のソケットで、HAT 側の 10 mm は HAT のソケットで決まるので削れません。
+The case is expected to be about **91.4 x 39.4 x 36.3 mm**. With low-profile sockets of about 5 mm for J1, J2 and J4, it gets down to about 32.8 mm. Most of the thickness is the two levels of sockets, and the 10 mm on the HAT side is set by the HAT's socket, so it cannot be reduced.
 
-## HAT の寸法の出どころ
+## Source of the HAT dimensions
 
-3D CAD データは公開されていません。Waveshare の製品ページにある[寸法図](https://www.waveshare.com/img/devkit/LCD/1.3inch-LCD-HAT/1.3inch-LCD-HAT-size.jpg)と製品写真、同じ HAT を使う SeedSigner の [Orange Pill ケース](https://github.com/SeedSigner/seedsigner/tree/dev/enclosures/orange_pill)（MIT）の STL から、次のように決めています。HAT 内の座標は、ジョイスティックを左にして LCD 側から見た左上が原点です。
+No 3D CAD data is published. The values below come from the [dimension drawing](https://www.waveshare.com/img/devkit/LCD/1.3inch-LCD-HAT/1.3inch-LCD-HAT-size.jpg) and product photos on Waveshare's product page, and from the STLs of SeedSigner's [Orange Pill case](https://github.com/SeedSigner/seedsigner/tree/dev/enclosures/orange_pill) (MIT), which uses the same HAT. Coordinates within the HAT have their origin at the top left, seen from the LCD side with the joystick on the left.
 
-| 項目 | 値 | 根拠 |
+| Item | Value | Basis |
 |---|---|---|
-| 外形 | 65 x 30.2、角 R1.5 | 寸法図 |
-| 取付穴 | (3.5, 3.5)、(61.5, 3.5)、(3.5, 26.7)、(61.5, 26.7)、M2.5 | 寸法図の間隔 58 x 23.2 |
-| ソケット | 下辺、中心 (32.5, 26.7)、1番ピンは右端の内側 | 写真（裏面、Pi Zero と Pi 3 に載せた状態）と Pi の HAT 規格 |
-| LCD のガラス | (17.7, 1.85)–(47.2, 28.35) | 寸法図の画像から縮尺で測った値、±0.3 mm |
-| ジョイスティックの中心 | (7.16, 15.45) | Orange Pill の穴の中心。寸法図からは (6.1, 15.2) と読めるが、Orange Pill のキャップを使うので穴に合わせた |
-| KEY1 / KEY2 / KEY3 の中心 | (57.1, 9.2) / (57.1, 15.2) / (57.1, 21.1) | 同上。Orange Pill のキー穴（57.0、間隔 5.9）とも一致 |
-| LCD の表示域の中心 | (31.25, 15.35) | Orange Pill の窓（24 x 24.5）の中心。ガラスの中心より 1 mm ほどジョイスティック寄り |
-| LCD の高さ | 1.7 mm 以下 | Orange Pill のガラス用の凹みの深さ |
-| ジョイスティックとキーの高さ | 測らない | 前カバーを Orange Pill と同じ形にし、そのキャップを使う（[3dprint/README.md](3dprint/README.md)） |
-| ソケットの高さ | 約 7.5 mm | Orange Pill は Pi Zero と HAT を 10 mm スペーサーで留める。Pi 側のヘッダ樹脂 2.5 mm を引いた値 |
+| Outline | 65 x 30.2, corner R1.5 | Dimension drawing |
+| Mounting holes | (3.5, 3.5), (61.5, 3.5), (3.5, 26.7), (61.5, 26.7), M2.5 | Spacing 58 x 23.2 in the dimension drawing |
+| Socket | Bottom edge, center (32.5, 26.7), pin 1 at the inner side of the right end | Photos (underside, mounted on a Pi Zero and a Pi 3) and the Pi HAT spec |
+| LCD glass | (17.7, 1.85)–(47.2, 28.35) | Measured to scale from the dimension drawing image, ±0.3 mm |
+| Joystick center | (7.16, 15.45) | Center of the Orange Pill hole. The dimension drawing reads (6.1, 15.2), but the hole was matched because the Orange Pill caps are used |
+| KEY1 / KEY2 / KEY3 centers | (57.1, 9.2) / (57.1, 15.2) / (57.1, 21.1) | Same as above. Also matches the Orange Pill key holes (57.0, spacing 5.9) |
+| LCD active area center | (31.25, 15.35) | Center of the Orange Pill window (24 x 24.5). About 1 mm toward the joystick from the glass center |
+| LCD height | 1.7 mm or less | Depth of the Orange Pill's recess for the glass |
+| Joystick and key height | Not measured | The front cover has the same shape as the Orange Pill and uses its caps ([3dprint/README.md](3dprint/README.md)) |
+| Socket height | About 7.5 mm | The Orange Pill fixes the Pi Zero and the HAT with 10 mm spacers. This is that minus the 2.5 mm header plastic on the Pi side |
 
-## 実物で測る項目
+## To measure on the real parts
 
-| 項目 | 現在の仮定 | 使い道 |
+| Item | Current assumption | Used for |
 |---|---|---|
-| ソケットの高さ、HAT 基板の厚さ | 7.5 / 1.6 mm | 厚さ。上の推定の確かめ |
-| HAT 裏面の部品の高さ | 未定 | J3 周りとの干渉 |
+| Socket height, HAT board thickness | 7.5 / 1.6 mm | Thickness. Checking the estimate above |
+| Height of parts on the HAT's underside | Unknown | Interference around J3 |
 
-## 配線
+## Routing
 
-`route.py` の格子（0.1 mm）上の迷路配線です。配線幅 0.25 mm、クリアランス 0.15 mm、ビア 0.6/0.3 mm で、JLCPCB の標準工程に収まります。2.54 mm ピッチのパッドの間には1本通ります。
+Maze routing on `route.py`'s grid (0.1 mm). Track width 0.25 mm, clearance 0.15 mm and vias 0.6/0.3 mm, which fit JLCPCB's standard process. One track passes between pads at 2.54 mm pitch.
 
-- HAT の M2.5 穴の周り半径 3.0 mm（スペーサーとねじ頭）、ケースの M2 穴の周り半径 2.3 mm、基板の縁から 0.5 mm には銅を置かない。
-- 信号を短い順に引き、最後に 3V3 と GND を引く。GND は両面のベタでもつながる。
-- 今の結果は 28 ネット、ビア 7 個、未配線 0。
+- No copper within a 3.0 mm radius of the HAT's M2.5 holes (spacers and screw heads), within a 2.3 mm radius of the case's M2 holes, or within 0.5 mm of the board edge.
+- Signals are routed shortest first, and 3V3 and GND last. GND is also connected through the pours on both sides.
+- The current result is 28 nets, 7 vias, 0 unrouted.
 
-## 次の作業
+## Next steps
 
-1. 「実物で測る項目」を測り、`generate.py` の定数を直して2つのスクリプトを再実行する。
-2. ケース（`3dprint/`）を試し刷りして、Orange Pill のキャップが動くか確かめる。
-3. コネクタ実装込みで基板を発注する見積もりを取る。低背ソケットを選べるかもここで確かめる。
+1. Measure the items in "To measure on the real parts", fix the constants in `generate.py` and rerun the two scripts.
+2. Test-print the case (`3dprint/`) and check that the Orange Pill caps move.
+3. Get a quote for ordering the board with the connectors fitted. Also check here whether low-profile sockets can be chosen.
 
-## 確認
+## Checks
 
-KiCad 10.0.7 の `kicad-cli` で確かめました。
+Checked with `kicad-cli` from KiCad 10.0.7.
 
-- 回路図の ERC はエラー0件。警告はフットプリントライブラリが CLI の環境に未登録という4件だけ。
-- 書き出したネットリストで、各ネットのピンが上の表と `board_pins.h` に一致する。3V3 は6ピン、GND は18ピン、LCD_RES を含む信号はどれも2ピン。
-- PCB の DRC は違反0件、未接続0件。残る指摘は、固定穴のライブラリ未登録の警告（穴ごとに1件）と、GND パッド2つのサーマルリリーフのスポーク不足（どちらも配線で GND につながっている）。
+- Schematic ERC has 0 errors. The only warnings are 4 saying the footprint library is not registered in the CLI environment.
+- In the exported netlist, the pins of each net match the table above and `board_pins.h`. 3V3 has 6 pins, GND has 18 pins, and every signal, including LCD_RES, has 2 pins.
+- PCB DRC has 0 violations and 0 unconnected items. The remaining findings are warnings that the mounting hole library is not registered (one per hole) and too few thermal relief spokes on two GND pads (both are connected to GND by tracks).

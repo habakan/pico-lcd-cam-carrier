@@ -1,63 +1,63 @@
-# Pico 2 H ケース Rev D
+# Pico 2 H case Rev D
 
-外形 **81.4 × 59.4 × 20.9 mm**（ボタンを含む高さ21.7 mm）。横長で、左に十字キー、中央に LCD、右に拒否キーを置きます。Rev C（63.4 × 43.4 × 42.3 mm）は、カメラ・Pico・LCD をソケットやハーネスで前後に積んでいたため厚くなり、LCD を横長と仮定していたため窓の位置も合いませんでした。Rev D ではカメラを十字キーの裏、Pico を右端の裏に置き、全部品のヘッダを直接はんだ付けして積み重ねをなくしています。LCD・カメラの寸法はメーカー図面から取っています。
+Outline **81.4 × 59.4 × 20.9 mm** (21.7 mm tall including the buttons). Landscape, with the D-pad on the left, the LCD in the center and the reject key on the right. Rev C (63.4 × 43.4 × 42.3 mm) stacked the camera, the Pico and the LCD front to back on sockets and harnesses, so it was thick, and it assumed a landscape LCD, so the window position did not match either. Rev D puts the camera behind the D-pad and the Pico behind the right end, and solders every part's header directly to remove the stacking. The LCD and camera dimensions come from the manufacturers' drawings.
 
-## 完成イメージ
+## Preview
 
-- [完成・内部配置](assembly_preview.png)
-- [分解図](assembly_exploded.png)
-- [回して確認する3Dビュー](assembly.html)：ブラウザーで開き、「完成」「内部」「分解」を切り替えます。
-- [組立GLB](assembly.glb)：電子部品を含む閲覧用。印刷には下記の3MF/STLを使います。
+- [Assembled, internal layout](assembly_preview.png)
+- [Exploded view](assembly_exploded.png)
+- [Rotatable 3D view](assembly.html): open in a browser and switch between "Assembled", "Inside" and "Exploded".
+- [Assembly GLB](assembly.glb): for viewing, includes the electronic parts. Use the 3MF/STL files below for printing.
 
-## 積み重ね（背面から）
+## Stack-up (from the back)
 
-| z (mm) | 部品 |
+| z (mm) | Part |
 |---|---|
-| 0–2.4 | 背面ケースの底。カメラ窓 Ø12、BOOTSEL穴 Ø3.2、ねじ頭の座ぐり |
-| 3.0–6.5 | カメラモジュール（高さ3.5 mm、要実測）/ Pico の USB・SWD コネクタ |
-| 6.5–8.1 | カメラ基板 / 7.1–8.1 Pico 基板 |
-| 8.1–10.6 | カメラ・Pico のヘッダ樹脂 |
-| 10.6–12.2 | キャリア基板 |
-| 12.2–14.7 | LCD のヘッダ樹脂 |
-| 14.7–18.2 | LCD 基板とガラス |
-| 18.5–20.9 | 前カバー |
+| 0–2.4 | Bottom of the back case. Camera window Ø12, BOOTSEL hole Ø3.2, counterbores for the screw heads |
+| 3.0–6.5 | Camera module (3.5 mm tall, needs measuring) / the Pico's USB and SWD connectors |
+| 6.5–8.1 | Camera board / 7.1–8.1 Pico board |
+| 8.1–10.6 | Camera and Pico header plastic |
+| 10.6–12.2 | Carrier board |
+| 12.2–14.7 | LCD header plastic |
+| 14.7–18.2 | LCD board and glass |
+| 18.5–20.9 | Front cover |
 
-## Bambu Studioで印刷するファイル
+## Files to print in Bambu Studio
 
-| ファイル | 内容 | 印刷方向 |
+| File | Contents | Print orientation |
 |---|---|---|
-| [bambu_plate_01_base.3mf](bambu_plate_01_base.3mf) | 背面ケース | 外側底面がベッド |
-| [bambu_plate_02_front.3mf](bambu_plate_02_front.3mf) | 前カバー | 画面側がベッド |
-| [bambu_plate_03_small_parts.3mf](bambu_plate_03_small_parts.3mf) | カメラ用スペーサー3個、ボタンキャップ6個 | キャップは頭がベッド |
+| [bambu_plate_01_base.3mf](bambu_plate_01_base.3mf) | Back case | Outer bottom on the bed |
+| [bambu_plate_02_front.3mf](bambu_plate_02_front.3mf) | Front cover | Screen side on the bed |
+| [bambu_plate_03_small_parts.3mf](bambu_plate_03_small_parts.3mf) | Three camera spacers, six button caps | Caps head down on the bed |
 
-3MFは形状のみを含みます。PLA・0.4 mmノズル・積層0.20 mm・壁4周・インフィル20%を初期値とし、スライスして`.gcode.3mf`を書き出してから印刷します。背面ケースの USB 開口と SWD 開口の上辺はブリッジになるので、プレビューで確認します。
+The 3MFs contain only geometry. The defaults are PLA, a 0.4 mm nozzle, 0.20 mm layers, 4 walls and 20% infill. Slice and export a `.gcode.3mf` before printing. The top edges of the USB and SWD openings in the back case become bridges, so check them in the preview.
 
-個別STL：[背面ケース](pico2h_case_base.stl)、[前カバー](pico2h_case_front.stl)、カメラ用スペーサー（[ねじ用](pico2h_case_camera_spacer.stl)・[ピン付き1](pico2h_case_camera_peg_1.stl)・[2](pico2h_case_camera_peg_2.stl)）、キャップ（[上](pico2h_case_button_1.stl)・[下](pico2h_case_button_2.stl)・[左](pico2h_case_button_3.stl)・[右](pico2h_case_button_4.stl)・[決定](pico2h_case_button_5.stl)・[拒否](pico2h_case_button_6.stl)）
+Individual STLs: [back case](pico2h_case_base.stl), [front cover](pico2h_case_front.stl), camera spacers ([for the screw](pico2h_case_camera_spacer.stl), [pinned 1](pico2h_case_camera_peg_1.stl), [pinned 2](pico2h_case_camera_peg_2.stl)), caps ([up](pico2h_case_button_1.stl), [down](pico2h_case_button_2.stl), [left](pico2h_case_button_3.stl), [right](pico2h_case_button_4.stl), [select](pico2h_case_button_5.stl), [reject](pico2h_case_button_6.stl))
 
-## 組立
+## Assembly
 
-ねじは **M2 × 16 mm を4本**。背面から差し、前カバーの柱（下穴 Ø1.6）へねじ込みます。
+Screws: **four M2 × 16 mm**. Insert them from the back and screw them into the front cover's posts (pilot holes Ø1.6).
 
-1. キャリア表面に SW1–SW6 を、裏面にカメラと Pico 2 H をはんだ付けする。カメラを付ける前に、H1 の位置にねじ用スペーサー（高さ2.5 mm）を、カメラ上側の2つの取付穴にピン付きスペーサーのピンを差しておく。
-2. キャリア表面に LCD をはんだ付けする。
-3. すべてのリードを1 mm以下に切りそろえる。スイッチのリードはカメラと Pico の真下に、LCD・カメラ・Pico のリードは LCD の真下に出る。
-4. 前カバーを裏返し、ボタンキャップ6個を穴へ入れ（中央の決定だけ色が違う）、組んだ基板を載せる。LCD の4つの穴に前カバーのピンが入る。
-5. 背面ケースをかぶせ、4本のねじで締める。H1 はカメラ基板、H3/H4 は Pico の取付穴を通る。ピン付きスペーサーは背面ケースの柱がカメラごと押さえる。
-6. USB が挿せること、SWD ケーブル（上辺の開口）が挿せること、ボタンが戻ることを確認する。
+1. Solder SW1–SW6 to the carrier's front, and the camera and the Pico 2 H to its back. Before fitting the camera, put the screw spacer (2.5 mm tall) at H1, and the pins of the pin spacers into the camera's two upper mounting holes.
+2. Solder the LCD to the carrier's front.
+3. Trim all leads to 1 mm or less. The switch leads come out right under the camera and the Pico, and the LCD, camera and Pico leads right under the LCD.
+4. Turn the front cover over, put the six button caps into the holes (only the center select cap is a different color) and lay the assembled board on it. The front cover's pins go into the LCD's four holes.
+5. Put on the back case and tighten the four screws. H1 passes through the camera board, and H3/H4 through the Pico's mounting holes. The back case's posts hold the pin spacers down together with the camera.
+6. Check that USB plugs in, that an SWD cable (opening on the top edge) plugs in, and that the buttons spring back.
 
-## 実物で測る項目
+## To measure on the real parts
 
-[case_dimensions.json](case_dimensions.json) を直して再生成します。XY はキャリア基板（KiCad）の座標、ケース座標は各2.7 mm足した値です。
+Fix [case_dimensions.json](case_dimensions.json) and regenerate. XY are carrier board (KiCad) coordinates; case coordinates add 2.7 mm to each.
 
-| パラメータ | 現在値 | 測る箇所 |
+| Parameter | Current value | Where to measure |
 |---|---|---|
-| `camera.lens_height` | 3.5 mm | カメラ基板のレンズ面からモジュール先端まで |
-| `pico.bootsel` | [7.0, 11.7] | Pico のピン1側の長辺・USB端から BOOTSEL 中心（写真から換算） |
-| `pico.usb_height` / `debug_height` | 2.9 / 2.9 mm | Pico 部品面からコネクタ上端 |
+| `camera.lens_height` | 3.5 mm | From the lens side of the camera board to the tip of the module |
+| `pico.bootsel` | [7.0, 11.7] | From the Pico's long edge on the pin 1 side and the USB end to the BOOTSEL center (converted from a photo) |
+| `pico.usb_height` / `debug_height` | 2.9 / 2.9 mm | From the Pico's component side to the top of the connector |
 
-## 再生成
+## Regenerating
 
-Python 3.11の仮想環境で、リポジトリ直下から実行します。
+Run from the repository root in a Python 3.11 virtual environment.
 
 ```sh
 uv venv -p 3.11 /tmp/pico-case-venv
@@ -65,11 +65,11 @@ VIRTUAL_ENV=/tmp/pico-case-venv uv pip install -r pico2h-carrier/3dprint/require
 /tmp/pico-case-venv/bin/python pico2h-carrier/3dprint/build_case_stl.py
 ```
 
-STL、3MF、OpenSCAD、GLB、KiCad参照用VRML、画像、HTML、検査レポートを出力します。STL・3MF・OpenSCAD・GLB は KiCad の y（下向き）を反転した右手系で出力するので、前から見た配置が実物と一致します（9bef5e1 までの STL は上下の鏡像でした）。画像・HTML・VRML は従来どおり KiCad の向きで描きます。KiCadの機械配置を更新するときだけ `update_mechanical_layout.py` も実行します。電気フットプリントや配線があるPCBへの上書きは拒否します。
+It writes STL, 3MF, OpenSCAD, GLB, VRML for KiCad reference, images, HTML and a check report. STL, 3MF, OpenSCAD and GLB flip KiCad's y (downward) and are written right-handed, so the layout seen from the front matches the real thing (STLs up to 9bef5e1 were mirrored top to bottom). Images, HTML and VRML are drawn in KiCad's orientation as before. Run `update_mechanical_layout.py` as well only when updating the mechanical layout in KiCad. It refuses to overwrite a PCB that has electrical footprints or tracks.
 
-## 確認結果
+## Check results
 
-- 全33パーツが閉じたメッシュで、印刷する11パーツは各1つの連結した立体。STLと3MFを再読込して確認。
-- 公称寸法で496組の体積干渉を計算し、重なり0件（ねじ頭は対象外）。[fit_report.json](fit_report.json)
-- 各部品の寸法をメーカー図面・データシートと照合した結果は `case_dimensions.json` の `checks` と3Dビューに載せています。LCD のピン列、スイッチの軸、BOOTSEL の位置を直しました。
-- スライス・実機印刷、KiCadでの読込・ERC/DRCは未実施。
+- All 33 parts are closed meshes, and each of the 11 printed parts is a single connected solid. Checked by reloading the STLs and 3MFs.
+- Volume interference computed for 496 pairs at nominal dimensions: 0 overlaps (screw heads excluded). [fit_report.json](fit_report.json)
+- The results of checking each part's dimensions against the manufacturers' drawings and datasheets are in `checks` in `case_dimensions.json` and in the 3D view. The LCD pin row, the switch shafts and the BOOTSEL position were fixed.
+- Not yet sliced or printed; not yet loaded in KiCad or checked with ERC/DRC.

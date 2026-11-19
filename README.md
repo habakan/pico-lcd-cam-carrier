@@ -18,8 +18,6 @@ print files for the case.
 | [hat-carrier/](hat-carrier/README.md) | Rev E | Everything plugs into sockets; no soldering. Tested |
 | [pico2h-carrier/](pico2h-carrier/README.md) | Rev D | A draft where the LCD, the Pico and the camera are soldered on |
 
-The directory READMEs are in Japanese for now.
-
 ## Rev E
 
 ![KiCad 3D render of the carrier board](docs/carrier_iso.png)
